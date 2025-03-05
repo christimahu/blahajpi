@@ -24,6 +24,9 @@ body {
     justify-content: center;
     overflow: hidden;
     transition: background 2s ease-in;
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
 }
 
 body.show-background {
@@ -52,6 +55,10 @@ body.show-background {
     max-width: 600px;
     z-index: 10;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .title-container {
@@ -145,7 +152,7 @@ video.visible {
 }
 
 .tagline {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     color: var(--text-color);
     line-height: 1.4;
 }
@@ -153,6 +160,25 @@ video.visible {
 .tagline p {
     font-size: 1.3rem;
     margin-bottom: 0.5rem;
+}
+
+.blahaj-info {
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    max-width: 90%;
+    line-height: 1.4;
+}
+
+.blahaj-info a {
+    color: var(--trans-blue);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.blahaj-info a:hover {
+    color: var(--trans-pink);
+    text-decoration: underline;
 }
 
 .github-link {
@@ -201,58 +227,104 @@ video.visible {
 
 @media (max-width: 768px) {
     :root {
-        --logo-size: 200px;
+        --logo-size: 150px;
     }
     
     .content {
-        padding: 1.8rem;
+        padding: 1.5rem;
         width: 95%;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     
     h1 {
-        font-size: 2.8rem;
+        font-size: 2.5rem;
     }
     
     .coming-soon {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin: 0.5rem 0 1rem;
     }
     
     .tagline p {
-        font-size: 1.1rem;
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
     }
     
     .emoji {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     
     .github-link i {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     
     .title-container {
         gap: 0.5rem;
     }
-}
-
-@media (max-width: 480px) {
-    h1 {
-        font-size: 2.2rem;
+    
+    .tagline {
+        margin-bottom: 0.8rem;
     }
     
-    .content {
-        padding: 1.5rem;
+    .blahaj-info {
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        max-width: 95%;
     }
     
-    .coming-soon {
-        font-size: 1.8rem;
-    }
-    
-    .tagline p {
-        font-size: 1rem;
+    .github-link {
+        margin-top: 1.2rem;
     }
     
     .github-link a {
-        padding: 0.6rem 1.2rem;
+        padding: 0.5rem 1rem;
         font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --logo-size: 120px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .content {
+        padding: 1.2rem;
+        width: 90%;
+    }
+    
+    .coming-soon {
+        font-size: 1.5rem;
+        margin: 0.3rem 0 0.8rem;
+    }
+    
+    .tagline p {
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+    
+    .blahaj-info {
+        font-size: 0.75rem;
+        line-height: 1.3;
+        margin-bottom: 0.8rem;
+    }
+    
+    .github-link a {
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .emoji {
+        font-size: 1.5rem;
+    }
+    
+    .github-link i {
+        font-size: 1.5rem;
     }
 }

@@ -11,6 +11,8 @@
 
 **Blahaj PI** is a content analysis tool designed to help LGBTQIA+ people, particularly transgender individuals, identify potentially harmful social media accounts.
 
+> What is a Blahaj? In Swedish, "Blåhaj" means "Blue Shark". This plush companion has become an unofficial mascot within the trans community. [Learn more on Wikipedia](https://en.wikipedia.org/wiki/Blåhaj).
+
 **Coming Soon!** 
 
 This project is currently under development. Visit our website for updates:
