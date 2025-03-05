@@ -30,3 +30,30 @@
 *.exe
 *.out
 *.app
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+build/
+cmake-build-*/
+
+# Common editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+.vs/
+*.suo
+*.user
+
+# OS specific
+.DS_Store
+Thumbs.db
