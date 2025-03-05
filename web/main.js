@@ -9,44 +9,52 @@
     document.addEventListener('DOMContentLoaded', init);
     
     /**
+     * Check if the device is mobile
+     * @return {boolean} True if the device is mobile
+     */
+    function isMobileDevice() {
+        return (
+            navigator.userAgent.match(/Android/i) ||
+            navigator.userAgent.match(/webOS/i) ||
+            navigator.userAgent.match(/iPhone/i) ||
+            navigator.userAgent.match(/iPad/i) ||
+            navigator.userAgent.match(/iPod/i) ||
+            navigator.userAgent.match(/BlackBerry/i) ||
+            navigator.userAgent.match(/Windows Phone/i)
+        );
+    }
+    
+    /**
      * Initialize all page functionality
      */
     function init() {
         const elements = {
             video: document.querySelector('video'),
-            introVideo: document.getElementById('intro-video'),
-            mainContent: document.getElementById('main-content'),
+            videoContainer: document.getElementById('video-container'),
+            logoImage: document.getElementById('logo-image'),
             sharkEmoji: document.querySelector('.emoji-shark'),
             magnifyEmoji: document.querySelector('.emoji-magnify'),
-            githubIcon: document.querySelector('.github-link i'),
-            body: document.body
+            githubIcon: document.querySelector('.github-link i')
         };
         
-        // Start with initial black screen, then fade in to first frame of video
-        setTimeout(() => {
-            // Fade in the video (initially hidden)
-            elements.video.classList.add('visible');
-            elements.introVideo.classList.add('fade-in-video');
-            
-            // Start playing after video has faded in halfway
-            setTimeout(() => {
-                startVideo(elements);
-            }, 500);
-        }, 500);
-    }
-    
-    /**
-     * Start playing the video
-     * @param {Object} elements - DOM elements
-     */
-    function startVideo(elements) {
-        const { video, introVideo } = elements;
+        // Check if device is mobile
+        if (isMobileDevice()) {
+            // On mobile, skip video and show logo directly
+            elements.videoContainer.style.display = 'none';
+            elements.logoImage.style.opacity = '1';
+            startAnimationSequence(elements);
+            return;
+        }
         
-        // Set up video events before playing
+        // Set up video events
         setupVideoEvents(elements);
         
-        // Play the video
-        video.play().catch(e => console.log('Autoplay prevented. User interaction required.'));
+        // Error handling
+        elements.video.addEventListener('error', () => {
+            elements.videoContainer.style.display = 'none';
+            elements.logoImage.style.opacity = '1';
+            startAnimationSequence(elements);
+        });
     }
     
     /**
@@ -54,45 +62,55 @@
      * @param {Object} elements - DOM elements
      */
     function setupVideoEvents(elements) {
-        const { video, introVideo } = elements;
+        const { video, videoContainer } = elements;
         
-        // Trigger when video ends naturally
+        // When video ends, wait 1 second before transitioning
         video.addEventListener('ended', () => {
-            // Wait half a second after the movie is done before fading out
+            console.log('Video ended');
             setTimeout(() => {
-                fadeOutVideo(elements);
-            }, 500);
+                transitionToLogo(elements);
+            }, 1000); // Wait 1 second on the last frame
         });
         
-        // Fix for Safari and some mobile browsers
-        video.addEventListener('canplaythrough', () => {
-            // Video is ready to play
+        // Start video
+        video.play().catch(e => {
+            console.log('Video playback error:', e);
+            // Fallback if video fails to play
+            videoContainer.style.display = 'none';
+            elements.logoImage.style.opacity = '1';
+            startAnimationSequence(elements);
         });
     }
     
     /**
-     * Fade out video and transition to main content
+     * Transition from video to logo
      * @param {Object} elements - DOM elements
      */
-    function fadeOutVideo(elements) {
-        const { introVideo, mainContent, body } = elements;
+    function transitionToLogo(elements) {
+        const { videoContainer, logoImage } = elements;
         
-        // Simple fade out
-        introVideo.classList.add('video-fading');
+        console.log('Starting transition to logo');
         
-        // Show main content as video fades out
+        // Step 1: Change to square shape and keep visible
+        videoContainer.classList.add('square');
+        
+        // Step 2: After shape change, fade out
         setTimeout(() => {
-            mainContent.style.display = 'block';
-            body.classList.add('show-background');
+            videoContainer.classList.add('fading');
             
-            // Hide video container after fade completes
+            // Step 3: Fade in the logo
             setTimeout(() => {
-                introVideo.style.display = 'none';
+                logoImage.style.opacity = '1';
                 
-                // Start animation sequence
-                startAnimationSequence(elements);
-            }, 500);
-        }, 750);
+                // Step 4: Hide video completely after fade
+                setTimeout(() => {
+                    videoContainer.style.display = 'none';
+                    
+                    // Start animation sequence
+                    startAnimationSequence(elements);
+                }, 250);
+            }, 250);
+        }, 500); // Time for shape transition
     }
     
     /**
@@ -102,20 +120,20 @@
     function startAnimationSequence(elements) {
         const { sharkEmoji, magnifyEmoji, githubIcon } = elements;
         
-        // First animation - jiggle shark after 4s
+        // First animation - jiggle shark after 1s
         setTimeout(() => {
             animateElement(sharkEmoji, 'jiggle', 500);
             
-            // Second animation - jiggle magnifying glass after 4s more
+            // Second animation - jiggle magnifying glass after 2s
             setTimeout(() => {
                 animateElement(magnifyEmoji, 'jiggle', 500);
                 
-                // Third animation - jiggle GitHub icon after 4s more
+                // Third animation - fancy github icon animation after 2s
                 setTimeout(() => {
-                    animateElement(githubIcon, 'jiggle', 500);
-                }, 4000);
-            }, 4000);
-        }, 4000);
+                    animateElement(githubIcon, 'github-dance', 1000);
+                }, 2000);
+            }, 2000);
+        }, 1000);
     }
     
     /**
