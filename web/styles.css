@@ -1,0 +1,361 @@
+:root {
+    --trans-blue: #55CDFC;
+    --trans-pink: #F7A8B8;
+    --trans-white: #FFFFFF;
+    --logo-size: 290px;
+    --title-color: #333;
+    --text-color: #555;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    --animation-delay-shark: 0.5s;
+    --animation-delay-magnify: 1.5s;
+    --animation-delay-github: 2.5s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(to right, 
+        var(--trans-blue) 0%, 
+        var(--trans-blue) 15%, 
+        var(--trans-pink) 15%, 
+        var(--trans-pink) 30%, 
+        var(--trans-white) 30%, 
+        var(--trans-white) 70%, 
+        var(--trans-pink) 70%, 
+        var(--trans-pink) 85%, 
+        var(--trans-blue) 85%, 
+        var(--trans-blue) 100%
+    );
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
+}
+
+.content {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(5px);
+    width: 90%;
+    max-width: 600px;
+    z-index: 10;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-container {
+    position: relative;
+    width: var(--logo-size);
+    height: var(--logo-size);
+    margin: 0 auto 1.5rem auto;
+}
+
+/* Video container with fixed dimensions */
+.video-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(var(--logo-size) * 1.6);
+    height: calc((var(--logo-size) * 1.6) * 9 / 16);
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+    background-color: white;
+    transition: all 0.5s ease-in-out; /* Reduced from 1s to 0.5s */
+    z-index: 2;
+}
+
+/* Inner video wrapper to maintain ratio */
+.video-inner-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease-in-out; /* Reduced from 1s to 0.5s */
+}
+
+/* Video element */
+.video-box video {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+}
+
+/* Shrinking transition - only affects container size */
+.video-box.shrinking {
+    width: var(--logo-size);
+    height: var(--logo-size);
+    border-radius: 25px;
+    background-color: white;
+}
+
+/* Fade out video content but not container */
+.video-box.shrinking .video-inner-wrapper {
+    opacity: 0;
+}
+
+.logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 25px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Reduced from 1s to 0.5s */
+    z-index: 1;
+}
+
+h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 3.5rem;
+    color: var(--title-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+h1 a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+h1 a:hover {
+    color: var(--trans-blue);
+}
+
+.emoji {
+    font-size: 2.5rem;
+    display: inline-block;
+}
+
+/* CSS Animations for emoji elements */
+.content.animation-ready .emoji-shark {
+    animation: jiggle 0.5s ease var(--animation-delay-shark);
+}
+
+.content.animation-ready .emoji-magnify {
+    animation: jiggle 0.5s ease var(--animation-delay-magnify);
+}
+
+.content.animation-ready .github-link i {
+    animation: github-dance 1s ease var(--animation-delay-github);
+}
+
+.coming-soon {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 1rem 0 1.5rem;
+    background: linear-gradient(to right, var(--trans-blue), var(--trans-pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: pulse 2s infinite;
+    letter-spacing: 2px;
+}
+
+.tagline {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    line-height: 1.4;
+}
+
+.tagline p {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.blahaj-info {
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    max-width: 90%;
+    line-height: 1.4;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.blahaj-info a {
+    color: var(--trans-blue);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.blahaj-info a:hover {
+    color: var(--trans-pink);
+    text-decoration: underline;
+}
+
+.github-link {
+    margin-top: 1rem;
+}
+
+.github-link a {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--title-color);
+    font-size: 1.2rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 30px;
+    background: linear-gradient(to right, var(--trans-blue), var(--trans-pink));
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.github-link a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.github-link i {
+    margin-right: 8px;
+    font-size: 2.5rem;
+    transition: transform 0.3s ease;
+}
+
+.github-link a:hover i {
+    transform: rotate(10deg);
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+@keyframes jiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+@keyframes github-dance {
+    0% { transform: scale(1) rotate(0deg); }
+    20% { transform: scale(1.1) rotate(-10deg); }
+    40% { transform: scale(1.1) rotate(10deg); }
+    60% { transform: scale(1.1) rotate(-10deg); }
+    80% { transform: scale(1.1) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --logo-size: 150px;
+    }
+    
+    .content {
+        padding: 1.5rem;
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .coming-soon {
+        font-size: 1.8rem;
+        margin: 0.5rem 0 1rem;
+    }
+    
+    .tagline p {
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .emoji {
+        font-size: 1.8rem;
+    }
+    
+    .github-link i {
+        font-size: 1.8rem;
+    }
+    
+    .blahaj-info {
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        max-width: 95%;
+    }
+    
+    .github-link {
+        margin-top: 1.2rem;
+    }
+    
+    .github-link a {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --logo-size: 120px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .content {
+        padding: 1.2rem;
+        width: 90%;
+    }
+    
+    .coming-soon {
+        font-size: 1.5rem;
+        margin: 0.3rem 0 0.8rem;
+    }
+    
+    .tagline p {
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+    
+    .blahaj-info {
+        font-size: 0.75rem;
+        line-height: 1.3;
+        margin-bottom: 0.8rem;
+    }
+    
+    .github-link a {
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .emoji {
+        font-size: 1.5rem;
+    }
+    
+    .github-link i {
+        font-size: 1.5rem;
+    }
+}
