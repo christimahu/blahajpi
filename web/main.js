@@ -25,35 +25,52 @@
     }
     
     /**
+     * Check if the device is iOS
+     * @return {boolean} True if the device is iOS
+     */
+    function isIOS() {
+        return (
+            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+        );
+    }
+    
+    /**
      * Initialize all page functionality
      */
     function init() {
         const elements = {
             video: document.querySelector('video'),
             videoContainer: document.getElementById('video-container'),
+            videoWrapper: document.querySelector('.video-inner-wrapper'),
             logoImage: document.getElementById('logo-image'),
-            sharkEmoji: document.querySelector('.emoji-shark'),
-            magnifyEmoji: document.querySelector('.emoji-magnify'),
-            githubIcon: document.querySelector('.github-link i')
+            contentContainer: document.querySelector('.content')
         };
         
-        // Check if device is mobile
-        if (isMobileDevice()) {
-            // On mobile, skip video and show logo directly
+        // Check if device is mobile but not iOS
+        if (isMobileDevice() && !isIOS()) {
+            // On non-iOS mobile, skip video and show logo directly
+            console.log('Non-iOS mobile device detected, skipping video');
             elements.videoContainer.style.display = 'none';
             elements.logoImage.style.opacity = '1';
-            startAnimationSequence(elements);
+            
+            // Add the animation-ready class to start CSS animations
+            elements.contentContainer.classList.add('animation-ready');
             return;
         }
         
-        // Set up video events
+        // For desktop or iOS, attempt to play the video
+        console.log('Desktop or iOS device detected, attempting video playback');
         setupVideoEvents(elements);
         
         // Error handling
-        elements.video.addEventListener('error', () => {
+        elements.video.addEventListener('error', (e) => {
+            console.log('Video error event triggered:', e);
             elements.videoContainer.style.display = 'none';
             elements.logoImage.style.opacity = '1';
-            startAnimationSequence(elements);
+            
+            // Add the animation-ready class to start CSS animations
+            elements.contentContainer.classList.add('animation-ready');
         });
     }
     
@@ -64,89 +81,106 @@
     function setupVideoEvents(elements) {
         const { video, videoContainer } = elements;
         
-        // When video ends, wait 1 second before transitioning
+        // Start transition 1 second before video ends
+        video.addEventListener('timeupdate', () => {
+            // If there's 0.5 second or less remaining (reduced from 1s)
+            if (video.duration - video.currentTime <= 0.5 && !videoContainer.classList.contains('shrinking')) {
+                startShrinkTransition(elements);
+            }
+        });
+        
+        // When video ends, show the logo
         video.addEventListener('ended', () => {
             console.log('Video ended');
-            setTimeout(() => {
-                transitionToLogo(elements);
-            }, 1000); // Wait 1 second on the last frame
+            showLogo(elements);
         });
         
-        // Start video
-        video.play().catch(e => {
+        // Force video to load
+        video.load();
+        
+        // Special handling for iOS
+        if (isIOS()) {
+            console.log('iOS-specific video handling');
+            // Try to play immediately
+            playVideoWithFallback(elements);
+            
+            // iOS often needs user interaction, so we'll add a touch/click handler
+            document.addEventListener('touchstart', function iosTouchHandler() {
+                console.log('Touch detected, attempting to play video again');
+                playVideoWithFallback(elements);
+                // Remove the handler after first touch to avoid repeated attempts
+                document.removeEventListener('touchstart', iosTouchHandler);
+            }, { once: true });
+        } else {
+            // For desktop browsers, just play normally
+            playVideoWithFallback(elements);
+        }
+    }
+    
+    /**
+     * Helper function to handle video playback with proper fallback
+     * @param {Object} elements - DOM elements
+     */
+    function playVideoWithFallback(elements) {
+        const { video, videoContainer, logoImage, contentContainer } = elements;
+        
+        // Add a timeout to fallback if video doesn't start within 5 seconds
+        const fallbackTimer = setTimeout(() => {
+            console.log('Video playback timeout - falling back to static image');
+            videoContainer.style.display = 'none';
+            logoImage.style.opacity = '1';
+            
+            // Add the animation-ready class to start CSS animations
+            contentContainer.classList.add('animation-ready');
+        }, 5000);
+        
+        // Try to play the video with better error handling
+        video.play().then(() => {
+            console.log('Video playback started successfully');
+            // Clear the fallback timer if video starts playing
+            clearTimeout(fallbackTimer);
+        }).catch(e => {
             console.log('Video playback error:', e);
+            // Clear the fallback timer
+            clearTimeout(fallbackTimer);
             // Fallback if video fails to play
             videoContainer.style.display = 'none';
-            elements.logoImage.style.opacity = '1';
-            startAnimationSequence(elements);
+            logoImage.style.opacity = '1';
+            
+            // Add the animation-ready class to start CSS animations
+            contentContainer.classList.add('animation-ready');
         });
     }
     
     /**
-     * Transition from video to logo
+     * Start the shrinking transition 0.5 second before video ends
      * @param {Object} elements - DOM elements
      */
-    function transitionToLogo(elements) {
-        const { videoContainer, logoImage } = elements;
+    function startShrinkTransition(elements) {
+        const { videoContainer } = elements;
         
-        console.log('Starting transition to logo');
-        
-        // Step 1: Change to square shape and keep visible
-        videoContainer.classList.add('square');
-        
-        // Step 2: After shape change, fade out
-        setTimeout(() => {
-            videoContainer.classList.add('fading');
-            
-            // Step 3: Fade in the logo
-            setTimeout(() => {
-                logoImage.style.opacity = '1';
-                
-                // Step 4: Hide video completely after fade
-                setTimeout(() => {
-                    videoContainer.style.display = 'none';
-                    
-                    // Start animation sequence
-                    startAnimationSequence(elements);
-                }, 250);
-            }, 250);
-        }, 500); // Time for shape transition
+        console.log('Starting shrink transition');
+        // Add the shrinking class to start the CSS transition
+        videoContainer.classList.add('shrinking');
     }
     
     /**
-     * Start the sequence of animations
+     * Show the logo after video ends
      * @param {Object} elements - DOM elements
      */
-    function startAnimationSequence(elements) {
-        const { sharkEmoji, magnifyEmoji, githubIcon } = elements;
+    function showLogo(elements) {
+        const { videoContainer, logoImage, contentContainer } = elements;
         
-        // First animation - jiggle shark after 1s
+        console.log('Showing logo');
+        // Hide video container after a short delay
         setTimeout(() => {
-            animateElement(sharkEmoji, 'jiggle', 500);
-            
-            // Second animation - jiggle magnifying glass after 2s
-            setTimeout(() => {
-                animateElement(magnifyEmoji, 'jiggle', 500);
-                
-                // Third animation - fancy github icon animation after 2s
-                setTimeout(() => {
-                    animateElement(githubIcon, 'github-dance', 1000);
-                }, 2000);
-            }, 2000);
-        }, 1000);
-    }
-    
-    /**
-     * Animate an element with a specific animation
-     * @param {Element} element - DOM element to animate
-     * @param {string} animationName - CSS animation name
-     * @param {number} duration - Animation duration in ms
-     */
-    function animateElement(element, animationName, duration) {
-        element.style.animation = `${animationName} ${duration/1000}s ease`;
+            videoContainer.style.display = 'none';
+        }, 500); // Reduced from 1000 to 500
         
-        setTimeout(() => {
-            element.style.animation = 'none';
-        }, duration);
+        // Show logo
+        logoImage.style.opacity = '1';
+        
+        // Start animations
+        contentContainer.classList.add('animation-ready');
     }
 })();

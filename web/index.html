@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Blahaj PI - Coming Soon</title>
+    
+    <!-- Favicon and App Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,10 +22,12 @@
     <div class="content">
         <div class="logo-container">
             <div class="video-box" id="video-container">
-                <video autoplay muted playsinline>
-                    <source src="media/blahajpi.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                <div class="video-inner-wrapper">
+                    <video autoplay muted playsinline preload="auto">
+                        <source src="media/blahajpi.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
             </div>
             <img src="media/blahajpi.webp" alt="Blahaj PI Logo" class="logo" id="logo-image" style="opacity: 0;">
         </div>
