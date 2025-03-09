@@ -1,11 +1,11 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# .github/workflows/gh-pages.yml
+name: Deploy Documentation and Website
 
 on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
+  
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -22,22 +22,69 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  # Build documentation job
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Install documentation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz
+          pip install mkdocs mkdocs-material
+      
+      - name: Generate API documentation
+        run: |
+          doxygen Doxyfile || echo "Creating default Doxyfile" && doxygen -g && echo "PROJECT_NAME = \"Blahaj PI\"" >> Doxyfile && echo "INPUT = lib/include lib/src" >> Doxyfile && echo "RECURSIVE = YES" >> Doxyfile && doxygen
+          
+      - name: Prepare web docs directory
+        run: mkdir -p web/docs/api
+          
+      - name: Copy Doxygen output
+        run: |
+          if [ -d "docs/doxygen/html" ]; then
+            cp -r docs/doxygen/html/* web/docs/api/
+          else
+            echo "Warning: Doxygen output not found"
+          fi
+          
+      - name: Build MkDocs documentation
+        run: |
+          # Create basic docs if they don't exist
+          mkdir -p docs/user-guide docs/developer-guide
+          if [ ! -f "docs/mkdocs.yml" ]; then
+            echo "Creating basic MkDocs configuration"
+            echo "site_name: Blahaj PI" > docs/mkdocs.yml
+            echo "theme: readthedocs" >> docs/mkdocs.yml
+            
+            # Create a minimal index if it doesn't exist
+            if [ ! -f "docs/index.md" ]; then
+              echo "# Blahaj PI" > docs/index.md
+              echo "Your friendly shark detective keeping social waters safe." >> docs/index.md
+            fi
+          fi
+          
+          # Build MkDocs
+          mkdocs build -f docs/mkdocs.yml -d web/docs || echo "MkDocs build failed, continuing anyway"
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'web'
+
+  # Deployment job
   deploy:
+    needs: build-docs
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: 'web'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
