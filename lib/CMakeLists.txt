@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.14)
 set(BLAHAJPI_LIB_SOURCES
     # Core
     src/analyzer.cpp
+    src/config.cpp
     
     # Models
     src/models/sgd.cpp

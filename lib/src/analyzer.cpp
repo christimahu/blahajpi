@@ -87,16 +87,16 @@ AnalysisResult AnalysisResult::fromMap(const std::unordered_map<std::string, std
 }
 
 // ==========================================
-// Analyzer Implementation - Private
+// AnalyzerImpl Implementation
 // ==========================================
 
-class Analyzer::Impl {
+class AnalyzerImpl {
 public:
-    Impl() : config_(), textProcessor_(), vectorizer_(true, 0.5, 10000, 1, 2) {
+    AnalyzerImpl() : config_(), textProcessor_(), vectorizer_(true, 0.5, 10000, 1, 2) {
         // Initialize with defaults
     }
     
-    Impl(const std::string& configPath) : config_(configPath), 
+    AnalyzerImpl(const std::string& configPath) : config_(configPath), 
                                          textProcessor_(), 
                                          vectorizer_(true, 0.5, 10000, 1, 2) {
         // Apply configuration
@@ -188,11 +188,9 @@ public:
         // Create appropriate model based on type
         if (modelType == "sgd") {
             model_ = std::make_unique<models::SGDClassifier>();
-        } else if (modelType == "neural_network") {
-            model_ = std::make_unique<models::NeuralNetworkClassifier>();
         } else {
-            std::cerr << "Unknown model type: " << modelType << std::endl;
-            return false;
+            // Use SGD as default if model type is not recognized
+            model_ = std::make_unique<models::SGDClassifier>();
         }
         
         // Try to load the model
@@ -471,9 +469,11 @@ private:
 // Analyzer Implementation - Public
 // ==========================================
 
-Analyzer::Analyzer() : pImpl(std::make_unique<Impl>()) {}
+Analyzer::Analyzer() : pImpl(std::make_unique<AnalyzerImpl>()) {}
 
-Analyzer::Analyzer(const std::string& configPath) : pImpl(std::make_unique<Impl>(configPath)) {}
+Analyzer::Analyzer(const std::string& configPath) : pImpl(std::make_unique<AnalyzerImpl>(configPath)) {}
+
+Analyzer::~Analyzer() = default;
 
 AnalysisResult Analyzer::analyze(const std::string& text) {
     return pImpl->analyze(text);

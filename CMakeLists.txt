@@ -50,6 +50,7 @@ include_directories(${INCLUDE_DIR})
 # Neural network classifier is added explicitly to ensure it's included
 set(LIB_SOURCES
     ${SRC_DIR}/analyzer.cpp
+    ${SRC_DIR}/config.cpp
     
     ${SRC_DIR}/models/sgd.cpp
     ${SRC_DIR}/models/neural_network.cpp
@@ -114,12 +115,9 @@ add_subdirectory(tests)
 # Make the test target a dependency of the build
 add_custom_target(check
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS blahajpi_cli blahajpi_lib
+    DEPENDS blahajpi_lib
     COMMENT "Running tests - build will fail if tests fail"
 )
-
-# Add dependency to make tests run after build
-add_dependencies(blahajpi_cli check)
 
 # Generate and install CMake package config
 include(CMakePackageConfigHelpers)
@@ -133,7 +131,7 @@ write_basic_package_version_file(
 
 # Configure package config file
 configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BlahajPIConfig.cmake.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/configs/cmake/BlahajPIConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/BlahajPIConfig.cmake"
     INSTALL_DESTINATION lib/cmake/BlahajPI
 )

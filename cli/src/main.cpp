@@ -4,7 +4,6 @@
  */
 
 #include "blahajpi/analyzer.hpp"
-#include "bpicli/commands.hpp"
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -12,16 +11,66 @@
 #include <memory>
 #include <vector>
 #include <iomanip>
+#include <functional>
 
 // Version info
 constexpr const char* VERSION = "1.0.0";
 constexpr const char* BUILD_DATE = __DATE__;
 
+// Forward declarations of command handlers
+int handleAnalyze(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer);
+int handleBatch(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer);
+int handleConfig(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer);
+int handleHelp(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer);
+int handleTrain(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer);
+int handleVersion(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer);
+int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer);
+
+/**
+ * @brief Command definition struct
+ */
+struct Command {
+    std::string description;
+    std::function<int(const std::vector<std::string>&, blahajpi::Analyzer&)> handler;
+};
+
+/**
+ * @brief Creates the registry of available commands
+ * @return Map of command names to Command objects
+ */
+std::unordered_map<std::string, Command> createCommandRegistry() {
+    std::unordered_map<std::string, Command> commands;
+    
+    // Create and add commands
+    Command analyzeCmd = {"Analyze text for potentially harmful content", handleAnalyze};
+    commands["analyze"] = analyzeCmd;
+    
+    Command batchCmd = {"Batch process multiple files", handleBatch};
+    commands["batch"] = batchCmd;
+    
+    Command configCmd = {"Manage configuration settings", handleConfig};
+    commands["config"] = configCmd;
+    
+    Command helpCmd = {"Display help information for commands", handleHelp};
+    commands["help"] = helpCmd;
+    
+    Command trainCmd = {"Train a new sentiment analysis model", handleTrain};
+    commands["train"] = trainCmd;
+    
+    Command versionCmd = {"Display version information", handleVersion};
+    commands["version"] = versionCmd;
+    
+    Command visualizeCmd = {"Generate visualizations from analysis results", handleVisualize};
+    commands["visualize"] = visualizeCmd;
+    
+    return commands;
+}
+
 /**
  * @brief Displays help message for the CLI
  * @param commands Map of available commands
  */
-void showHelp(const std::unordered_map<std::string, bpicli::Command>& commands) {
+void showHelp(const std::unordered_map<std::string, Command>& commands) {
     std::cout << "Blahaj PI - Your friendly shark detective keeping social waters safe\n\n";
     std::cout << "Usage: blahajpi [options] command [command_options]\n\n";
     
@@ -52,7 +101,7 @@ void showHelp(const std::unordered_map<std::string, bpicli::Command>& commands) 
  */
 int main(int argc, char* argv[]) {
     // Create the command registry
-    auto commands = bpicli::createCommandRegistry();
+    auto commands = createCommandRegistry();
     
     // Process command line arguments
     std::vector<std::string> args;
@@ -64,7 +113,8 @@ int main(int argc, char* argv[]) {
         if (arg == "--config" && i + 1 < argc) {
             configPath = argv[++i];
         } else if (arg == "--version") {
-            return bpicli::handleVersion({}, blahajpi::Analyzer());
+            blahajpi::Analyzer analyzer;
+            return handleVersion({}, analyzer);
         } else if (arg == "--help" || arg == "-h") {
             showHelp(commands);
             return 0;
@@ -103,4 +153,55 @@ int main(int argc, char* argv[]) {
         std::cerr << "Run 'blahajpi --help' for usage information" << std::endl;
         return 1;
     }
+}
+
+// Placeholder implementations of command handlers
+int handleAnalyze(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
+    (void)args;  // Silence unused parameter warning
+    (void)analyzer;  // Silence unused parameter warning
+    std::cout << "Analyze command not yet implemented." << std::endl;
+    return 0;
+}
+
+int handleBatch(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
+    (void)args;  // Silence unused parameter warning
+    (void)analyzer;  // Silence unused parameter warning
+    std::cout << "Batch command not yet implemented." << std::endl;
+    return 0;
+}
+
+int handleConfig(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
+    (void)args;  // Silence unused parameter warning
+    (void)analyzer;  // Silence unused parameter warning
+    std::cout << "Config command not yet implemented." << std::endl;
+    return 0;
+}
+
+int handleHelp(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
+    (void)args;  // Silence unused parameter warning
+    (void)analyzer;  // Silence unused parameter warning
+    std::cout << "Help command not yet implemented." << std::endl;
+    return 0;
+}
+
+int handleTrain(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
+    (void)args;  // Silence unused parameter warning
+    (void)analyzer;  // Silence unused parameter warning
+    std::cout << "Train command not yet implemented." << std::endl;
+    return 0;
+}
+
+int handleVersion(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
+    (void)args;  // Silence unused parameter warning
+    (void)analyzer;  // Silence unused parameter warning
+    std::cout << "Blahaj PI version " << VERSION << std::endl;
+    std::cout << "Built on " << BUILD_DATE << std::endl;
+    return 0;
+}
+
+int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
+    (void)args;  // Silence unused parameter warning
+    (void)analyzer;  // Silence unused parameter warning
+    std::cout << "Visualize command not yet implemented." << std::endl;
+    return 0;
 }

@@ -367,7 +367,6 @@ std::string TextProcessor::normalizeRepeatedChars(std::string_view text) const {
 std::string TextProcessor::processHashtags(std::string_view text) const {
     std::regex hashtagPattern(R"(#([a-zA-Z0-9_]+))");
     std::string input(text);
-    std::string result;
     
     // Lambda function to process a hashtag match
     auto processHashtag = [](const std::string& tag) -> std::string {
@@ -386,11 +385,30 @@ std::string TextProcessor::processHashtags(std::string_view text) const {
         return separated;
     };
     
-    // Replace hashtags using regex_replace
-    result = std::regex_replace(input, hashtagPattern, 
-                               [&processHashtag](const std::smatch& match) {
-                                   return processHashtag(match[0].str());
-                               });
+    // Use a temporary string to build the result
+    std::string result = input;
+    
+    // Find all hashtags and replace them
+    std::smatch match;
+    std::string::const_iterator searchStart(input.cbegin());
+    
+    // Find all occurrences
+    while (std::regex_search(searchStart, input.cend(), match, hashtagPattern)) {
+        // Get the hashtag
+        std::string hashtag = match[0].str();
+        
+        // Process it
+        std::string processed = processHashtag(hashtag);
+        
+        // Replace in the result string
+        size_t pos = result.find(hashtag);
+        if (pos != std::string::npos) {
+            result.replace(pos, hashtag.length(), processed);
+        }
+        
+        // Move to the next position after this match
+        searchStart = match.suffix().first;
+    }
     
     return result;
 }

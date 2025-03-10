@@ -76,9 +76,14 @@ if(Python3_FOUND)
     # Set test labels for E2E tests
     set_tests_properties(cli_e2e_test api_e2e_test PROPERTIES LABELS "E2E")
     
-    # Copy E2E test files to build directory
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/e2e/ 
-         DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/e2e)
+    # Create e2e directory if it doesn't exist
+    file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/e2e)
+    
+    # Only copy files if the directory exists
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/e2e)
+        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/e2e/ 
+             DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/e2e)
+    endif()
 endif()
 
 # Copy test data to build directory

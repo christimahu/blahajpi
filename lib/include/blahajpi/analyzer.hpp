@@ -45,6 +45,9 @@ struct AnalysisResult {
     static AnalysisResult fromMap(const std::unordered_map<std::string, std::string>& map);
 };
 
+// Forward declaration of implementation class
+class AnalyzerImpl;
+
 /**
  * @brief Main class for sentiment analysis of social media content
  * 
@@ -63,6 +66,11 @@ public:
      * @param configPath Path to configuration file
      */
     explicit Analyzer(const std::string& configPath);
+    
+    /**
+     * @brief Destructor
+     */
+    ~Analyzer();
     
     /**
      * @brief Analyze text for harmful content
@@ -126,9 +134,8 @@ public:
     bool loadConfig(const std::string& configPath);
 
 private:
-    // Implementation details are hidden
-    class Impl;
-    std::unique_ptr<Impl> pImpl;
+    // Implementation details are in a separate class
+    std::unique_ptr<AnalyzerImpl> pImpl;
 };
 
 } // namespace blahajpi

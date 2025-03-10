@@ -15,6 +15,7 @@ file(GLOB_RECURSE UTILS_SOURCES "${CLI_SRC_DIR}/utils/*.cpp")
 # Define all CLI sources
 set(BLAHAJPI_CLI_SOURCES
     ${CLI_SRC_DIR}/main.cpp
+    ${CLI_SRC_DIR}/commands.cpp
     ${COMMANDS_SOURCES}
     ${UTILS_SOURCES}
 )
