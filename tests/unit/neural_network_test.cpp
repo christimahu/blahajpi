@@ -13,10 +13,15 @@
 int main() {
     // Simple functionality test
     try {
-        // Create a neural network classifier with default settings
-        blahajpi::models::NeuralNetworkClassifier classifier;
+        // Create a neural network classifier with explicit parameters
+        // Based on header: hiddenLayers, neuronsPerLayer, epochs, learningRate
+        blahajpi::models::NeuralNetworkClassifier classifier(
+            1,     // hiddenLayers
+            10,    // neuronsPerLayer
+            10,    // epochs
+            0.01   // learningRate
+        );
         
-        // This is just a placeholder test
         std::cout << "NeuralNetworkClassifier test placeholder - Test passed" << std::endl;
         
         return 0;

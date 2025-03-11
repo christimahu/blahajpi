@@ -8,8 +8,8 @@ demonstrating the build process and CLI usage.
 Quick usage examples:
     ./dev.py --build                # Build the project
     ./dev.py --test                 # Run tests
-    ./dev.py --run analyze --file data/examples/twitter_example.csv   # Analyze a file
-    ./dev.py --run train --dataset data/examples/twitter_example.csv --model custom
+    ./dev.py --run -- analyze --file data/examples/twitter_example.csv   # Analyze a file
+    ./dev.py --demo                 # Run complete functionality demo
     ./dev.py --docs                 # Generate documentation
 """
 
@@ -30,6 +30,7 @@ def parse_args():
     action_group.add_argument("--build", action="store_true", help="Build the project")
     action_group.add_argument("--test", action="store_true", help="Run tests")
     action_group.add_argument("--run", action="store_true", help="Run Blahaj PI CLI")
+    action_group.add_argument("--demo", action="store_true", help="Run a complete demonstration of functionality")
     action_group.add_argument("--clean", action="store_true", help="Clean build directory")
     action_group.add_argument("--docs", action="store_true", help="Generate documentation")
     
@@ -58,26 +59,29 @@ def parse_args():
     parser.epilog = """
 Example CLI Usage:
   # Analyze a file for potentially harmful content
-  ./dev.py --run analyze --file data/examples/twitter_example.csv
+  ./dev.py --run -- analyze --file data/examples/twitter_example.csv
   
   # Train a custom model
-  ./dev.py --run train --dataset data/examples/twitter_example.csv --output data/models/my_model
+  ./dev.py --run -- train --dataset data/examples/twitter_example.csv --output data/models/my_model
   
   # Generate a word cloud visualization of harmful content
-  ./dev.py --run visualize --input data/examples/twitter_example.csv --output data/visualization.txt
+  ./dev.py --run -- visualize --input data/examples/twitter_example.csv --output data/visualization.txt
   
   # Show help for a specific command
-  ./dev.py --run help analyze
+  ./dev.py --run -- help analyze
+  
+  # Run a complete demo of core functionality
+  ./dev.py --demo
     """
     
     # Add a separator to distinguish Blahaj PI arguments from script arguments
     parser.add_argument("blahajpi_args", nargs="*", 
-                       help="Arguments to pass to Blahaj PI CLI when using --run")
+                       help="Arguments to pass to Blahaj PI CLI when using --run (use -- before CLI args)")
     
     args = parser.parse_args()
     
     # If no action specified, show help
-    if not (args.build or args.test or args.run or args.clean or args.docs):
+    if not (args.build or args.test or args.run or args.clean or args.docs or args.demo):
         parser.print_help()
         sys.exit(1)
     
@@ -300,6 +304,50 @@ def run_blahajpi(executable_path, config_path, args):
     
     return subprocess.run(cmd)
 
+def run_demo(project_root, args):
+    """Run a complete demonstration of Blahaj PI capabilities"""
+    executable_path = find_executable(project_root)
+    if not executable_path:
+        print("Error: CLI executable not found. Building project first...")
+        if not build_project(args, project_root):
+            return False
+        executable_path = find_executable(project_root)
+        if not executable_path:
+            return False
+    
+    print("\n" + "="*80)
+    print("BLAHAJ PI CAPABILITY DEMONSTRATION")
+    print("="*80)
+    
+    # Path to the example data file
+    sample_file = project_root / "data" / "examples" / "twitter_example.csv"
+    if not sample_file.exists():
+        print(f"Error: Sample data not found at {sample_file}")
+        print("Please ensure the data directory is properly set up")
+        return False
+    
+    # Build directory for output
+    build_dir = project_root / "build"
+    build_dir.mkdir(exist_ok=True)
+    
+    # Run each main command to demonstrate functionality
+    commands = [
+        ["version"],
+        ["help"],
+        ["analyze", "--file", str(sample_file)],
+        ["config", "list"],
+        ["visualize", "--input", str(sample_file), "--output", str(build_dir / "visualization.txt")]
+    ]
+    
+    for i, cmd in enumerate(commands, 1):
+        print(f"\n=== {i}. RUNNING: {' '.join(cmd)} ===\n")
+        subprocess.run([str(executable_path)] + cmd)
+    
+    print("\n=== DEMO COMPLETE ===")
+    print("For more details on specific commands, run: ./dev.py --run -- help <command>")
+    
+    return True
+
 def run_tests(project_root, args):
     """Run project tests"""
     build_dir = project_root / "build"
@@ -495,7 +543,7 @@ def main():
     # Handle clean request first
     if args.clean:
         clean_build_directory(project_root)
-        if not (args.build or args.test or args.run or args.docs):
+        if not (args.build or args.test or args.run or args.docs or args.demo):
             return 0
     
     # Handle documentation generation
@@ -504,7 +552,7 @@ def main():
             return 1
     
     # Handle build request (or needed for other actions)
-    if args.build or args.test or args.run:
+    if args.build or args.test or args.run or args.demo:
         # Check if we need to build
         executable_path = find_executable(project_root)
         need_build = args.build or not executable_path
@@ -513,12 +561,17 @@ def main():
             if not build_project(args, project_root):
                 return 1
             # Always run tests after building unless explicitly testing
-            if not args.test:
+            if not args.test and not args.demo:
                 run_tests(project_root, args)
     
     # Handle test request
     if args.test:
         if not run_tests(project_root, args):
+            return 1
+    
+    # Handle demo request
+    if args.demo:
+        if not run_demo(project_root, args):
             return 1
     
     # Handle run request

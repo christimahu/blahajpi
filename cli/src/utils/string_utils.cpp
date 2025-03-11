@@ -39,7 +39,96 @@ std::unordered_map<std::string, std::string> parseArgs(const std::vector<std::st
                 std::string value = key.substr(equalsPos + 1);
                 key = key.substr(0, equalsPos);
                 parsedArgs[key] = value;
+            } else if (i + 1 < args.size() && args[i + 1][0] != '-') {
+                // The next argument is a value (doesn't start with -)
+                parsedArgs[key] = args[++i];
+            } else {
+                // Flag without value
+                parsedArgs[key] = "true";
             }
+        } else if (arg.substr(0, 1) == "-" && arg.length() > 2) {
+            // Combined short options like -abc
+            for (size_t j = 1; j < arg.length(); ++j) {
+                std::string key(1, arg[j]);
+                parsedArgs[key] = "true";
+            }
+        } else {
+            // Positional argument (would be handled by the specific command)
+        }
+    }
+    
+    return parsedArgs;
+}
+
+std::string loadFileContent(const std::string& filePath) {
+    std::ifstream file(filePath);
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file: " + filePath);
+    }
+    
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return buffer.str();
+}
+
+bool saveToFile(const std::string& content, const std::string& filePath) {
+    std::ofstream file(filePath);
+    if (!file.is_open()) {
+        return false;
+    }
+    
+    file << content;
+    return !file.fail();
+}
+
+void printTable(
+    const std::vector<std::string>& headers,
+    const std::vector<std::vector<std::string>>& rows,
+    const std::vector<int>& columnWidths) {
+    
+    // Calculate column widths if not provided
+    std::vector<int> widths = columnWidths;
+    
+    if (widths.empty()) {
+        widths.resize(headers.size(), 0);
+        
+        // Calculate width for each column based on content
+        for (size_t i = 0; i < headers.size(); ++i) {
+            widths[i] = std::max(widths[i], static_cast<int>(headers[i].length()));
+        }
+        
+        for (const auto& row : rows) {
+            for (size_t i = 0; i < row.size() && i < widths.size(); ++i) {
+                widths[i] = std::max(widths[i], static_cast<int>(row[i].length()));
+            }
+        }
+        
+        // Add some padding
+        for (auto& width : widths) {
+            width += 2;
+        }
+    }
+    
+    // Print header
+    for (size_t i = 0; i < headers.size(); ++i) {
+        std::cout << std::left << std::setw(widths[i]) << headers[i];
+    }
+    std::cout << std::endl;
+    
+    // Print separator
+    for (size_t i = 0; i < headers.size(); ++i) {
+        std::cout << std::string(widths[i], '-');
+    }
+    std::cout << std::endl;
+    
+    // Print rows
+    for (const auto& row : rows) {
+        for (size_t i = 0; i < row.size() && i < widths.size(); ++i) {
+            std::cout << std::left << std::setw(widths[i]) << row[i];
+        }
+        std::cout << std::endl;
+    }
+}
 
 std::string formatResult(const blahajpi::AnalysisResult& result, bool verbose) {
     std::stringstream output;
@@ -158,93 +247,4 @@ std::string getBuildDate() {
 }
 
 } // namespace utils
-} // namespace bpicli else if (i + 1 < args.size() && args[i + 1][0] != '-') {
-                // The next argument is a value (doesn't start with -)
-                parsedArgs[key] = args[++i];
-            } else {
-                // Flag without value
-                parsedArgs[key] = "true";
-            }
-        } else if (arg.substr(0, 1) == "-" && arg.length() > 2) {
-            // Combined short options like -abc
-            for (size_t j = 1; j < arg.length(); ++j) {
-                std::string key(1, arg[j]);
-                parsedArgs[key] = "true";
-            }
-        } else {
-            // Positional argument (would be handled by the specific command)
-        }
-    }
-    
-    return parsedArgs;
-}
-
-std::string loadFileContent(const std::string& filePath) {
-    std::ifstream file(filePath);
-    if (!file.is_open()) {
-        throw std::runtime_error("Could not open file: " + filePath);
-    }
-    
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    return buffer.str();
-}
-
-bool saveToFile(const std::string& content, const std::string& filePath) {
-    std::ofstream file(filePath);
-    if (!file.is_open()) {
-        return false;
-    }
-    
-    file << content;
-    return !file.fail();
-}
-
-void printTable(
-    const std::vector<std::string>& headers,
-    const std::vector<std::vector<std::string>>& rows,
-    const std::vector<int>& columnWidths) {
-    
-    // Calculate column widths if not provided
-    std::vector<int> widths = columnWidths;
-    
-    if (widths.empty()) {
-        widths.resize(headers.size(), 0);
-        
-        // Calculate width for each column based on content
-        for (size_t i = 0; i < headers.size(); ++i) {
-            widths[i] = std::max(widths[i], static_cast<int>(headers[i].length()));
-        }
-        
-        for (const auto& row : rows) {
-            for (size_t i = 0; i < row.size() && i < widths.size(); ++i) {
-                widths[i] = std::max(widths[i], static_cast<int>(row[i].length()));
-            }
-        }
-        
-        // Add some padding
-        for (auto& width : widths) {
-            width += 2;
-        }
-    }
-    
-    // Print header
-    for (size_t i = 0; i < headers.size(); ++i) {
-        std::cout << std::left << std::setw(widths[i]) << headers[i];
-    }
-    std::cout << std::endl;
-    
-    // Print separator
-    for (size_t i = 0; i < headers.size(); ++i) {
-        std::cout << std::string(widths[i], '-');
-    }
-    std::cout << std::endl;
-    
-    // Print rows
-    for (const auto& row : rows) {
-        for (size_t i = 0; i < row.size() && i < widths.size(); ++i) {
-            std::cout << std::left << std::setw(widths[i]) << row[i];
-        }
-        std::cout << std::endl;
-    }
-}
+} // namespace bpicli
