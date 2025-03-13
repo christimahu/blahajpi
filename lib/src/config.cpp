@@ -46,6 +46,8 @@ bool Config::loadFromFile(const std::string& configPath) {
         auto keyValuePair = parseLine(line);
         if (keyValuePair) {
             configValues[keyValuePair->first] = keyValuePair->second;
+            // Debug output to verify configuration is loaded
+            std::cout << "Loaded config: " << keyValuePair->first << " = " << keyValuePair->second << std::endl;
         } else {
             std::cerr << "Warning: Invalid configuration line " << lineNum 
                       << ": '" << line << "'" << std::endl;
@@ -109,7 +111,10 @@ bool Config::saveToFile(const std::string& configPath) const {
 
 std::string Config::getString(const std::string& key, const std::string& defaultValue) const {
     auto it = configValues.find(key);
-    return (it != configValues.end()) ? it->second : defaultValue;
+    if (it != configValues.end()) {
+        return it->second;
+    }
+    return defaultValue;
 }
 
 int Config::getInt(const std::string& key, int defaultValue) const {
@@ -263,6 +268,10 @@ void Config::loadDefaults() {
     // Path settings
     configValues["model-dir"] = "../models/default"; // Directory for model files
     configValues["output-dir"] = "../outputs";       // Directory for output files
+    
+    // Dataset column settings
+    configValues["label-column"] = "label";          // Default label column name
+    configValues["text-column"] = "text";            // Default text column name
 }
 
 } // namespace blahajpi

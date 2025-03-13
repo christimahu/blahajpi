@@ -48,6 +48,28 @@ int handleTrain(const std::vector<std::string>& args, blahajpi::Analyzer& analyz
         }
     }
     
+    // Get column names from configuration
+    auto config = analyzer.getConfig();
+    
+    // Default column names
+    std::string labelColumn = "label";
+    std::string textColumn = "text";
+    
+    // Check for column name configuration
+    auto labelIt = config.find("label-column");
+    if (labelIt != config.end()) {
+        labelColumn = labelIt->second;
+    }
+    
+    auto textIt = config.find("text-column");
+    if (textIt != config.end()) {
+        textColumn = textIt->second;
+    }
+    
+    // Set column names in configuration
+    analyzer.setConfig("label-column", labelColumn);
+    analyzer.setConfig("text-column", textColumn);
+    
     // Apply any overrides to the configuration
     if (parsedArgs.count("alpha") > 0) {
         analyzer.setConfig("alpha", parsedArgs["alpha"]);
@@ -66,14 +88,14 @@ int handleTrain(const std::vector<std::string>& args, blahajpi::Analyzer& analyz
     }
     
     // Show training configuration
-    auto config = analyzer.getConfig();
+    auto updatedConfig = analyzer.getConfig();
     std::cout << "Training Configuration:" << std::endl;
     std::cout << "  Dataset: " << datasetPath << std::endl;
     std::cout << "  Output: " << outputDir << std::endl;
-    std::cout << "  Regularization (alpha): " << config["alpha"] << std::endl;
-    std::cout << "  Learning rate (eta0): " << config["eta0"] << std::endl;
-    std::cout << "  Epochs: " << config["epochs"] << std::endl;
-    std::cout << "  Max features: " << config["max-features"] << std::endl;
+    std::cout << "  Regularization (alpha): " << updatedConfig["alpha"] << std::endl;
+    std::cout << "  Learning rate (eta0): " << updatedConfig["eta0"] << std::endl;
+    std::cout << "  Epochs: " << updatedConfig["epochs"] << std::endl;
+    std::cout << "  Max features: " << updatedConfig["max-features"] << std::endl;
     
     // Confirm with user
     std::cout << "\nReady to start training. This may take a while depending on the dataset size." << std::endl;

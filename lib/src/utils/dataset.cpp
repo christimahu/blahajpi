@@ -455,9 +455,9 @@ bool Dataset::loadFromCSV(
     if (labelIdx == -1 || textIdx == -1) {
         std::cerr << "Error: Could not find required columns in CSV file." << std::endl;
         std::cerr << "Looking for: '" << labelColumn << "' and '" << textColumn << "'" << std::endl;
-        std::cerr << "Available columns: ";
+        std::cerr << "Available columns: '";
         for (const auto& h : headers) {
-            std::cerr << "'" << h << "' ";
+            std::cerr << h << "' '";
         }
         std::cerr << std::endl;
         return false;
