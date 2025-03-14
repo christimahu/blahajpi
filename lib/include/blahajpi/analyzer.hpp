@@ -4,6 +4,9 @@
  * 
  * This file defines the primary interface for analyzing social media content
  * to identify potentially harmful content targeting transgender individuals.
+ * 
+ * @author Christi Mahu
+ * @date 2024
  */
 
 #pragma once
@@ -15,6 +18,22 @@
 #include <unordered_map>
 
 namespace blahajpi {
+
+// Forward declaration for CloudConfig
+namespace utils {
+    // Forward declare the CloudConfig struct directly instead of as part of WordCloud
+    struct CloudConfig {
+        size_t maxWords = 30;      ///< Maximum number of words to include
+        size_t width = 80;         ///< Width of the word cloud in characters
+        size_t height = 15;        ///< Height of the word cloud in characters
+        bool useColor = true;      ///< Whether to use ANSI color codes
+        bool useBars = false;      ///< Whether to use bar-style visualization
+        bool showFrequencies = false; ///< Whether to show word frequencies
+    };
+    
+    // Forward declare the WordCloud class separately
+    class WordCloud;
+}
 
 /**
  * @brief Result of a sentiment analysis operation
@@ -112,6 +131,20 @@ public:
         const std::vector<AnalysisResult>& analysisResults,
         const std::string& outputPath,
         bool harmfulOnly = true);
+    
+    /**
+     * @brief Generate a custom word cloud visualization with configuration
+     * @param analysisResults Analysis results to visualize
+     * @param outputPath Path to save the visualization
+     * @param harmfulOnly Whether to include only harmful content
+     * @param config Configuration for the word cloud
+     * @return True if generation was successful
+     */
+    bool generateCustomVisualization(
+        const std::vector<AnalysisResult>& analysisResults,
+        const std::string& outputPath,
+        bool harmfulOnly = true,
+        const utils::CloudConfig& config = {});
     
     /**
      * @brief Get the current configuration

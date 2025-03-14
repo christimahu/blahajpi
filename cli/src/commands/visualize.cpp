@@ -1,6 +1,12 @@
 /**
  * @file visualize.cpp
  * @brief Implementation of the visualize command
+ * 
+ * This command generates word cloud visualizations from analysis results
+ * or directly from text data, showing frequency patterns in the content.
+ * 
+ * @author Christi Mahu
+ * @date 2024
  */
 
 #include "bpicli/commands.hpp"
@@ -15,6 +21,16 @@
 
 namespace bpicli {
 
+/**
+ * @brief Handles the visualize command execution
+ * 
+ * Processes command-line arguments and generates text visualizations
+ * based on content analysis.
+ * 
+ * @param args Command arguments
+ * @param analyzer Analyzer instance
+ * @return Exit code (0 on success)
+ */
 int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
     // Parse arguments
     auto parsedArgs = utils::parseArgs(args);
@@ -53,6 +69,12 @@ int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& an
     // Read the input file
     std::vector<std::string> texts;
     std::vector<blahajpi::AnalysisResult> results;
+    
+    // Get column names for CSV files (if provided)
+    std::string labelColumn = parsedArgs.count("label-column") > 0 ? 
+                             parsedArgs["label-column"] : "sentiment_label";
+    std::string textColumn = parsedArgs.count("text-column") > 0 ? 
+                            parsedArgs["text-column"] : "tweet_text";
     
     try {
         // Check if this is a CSV file with analysis results
@@ -97,9 +119,10 @@ int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& an
                         std::string header = columns[i];
                         std::transform(header.begin(), header.end(), header.begin(), ::tolower);
                         
-                        if (header == "text" || header == "content" || header == "file") {
+                        // Match with provided column names
+                        if (header == textColumn || header == "text" || header == "content") {
                             textIndex = static_cast<int>(i);
-                        } else if (header == "sentiment" || header == "label") {
+                        } else if (header == labelColumn || header == "label" || header == "sentiment") {
                             sentimentIndex = static_cast<int>(i);
                         }
                     }
@@ -119,7 +142,7 @@ int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& an
                         if (sentimentIndex != -1 && !includeSafe) {
                             if (sentimentIndex < static_cast<int>(columns.size())) {
                                 std::string sentiment = columns[sentimentIndex];
-                                if (sentiment == "Harmful") {
+                                if (sentiment == "Harmful" || sentiment == "4") {
                                     texts.push_back(text);
                                 }
                             }
@@ -172,43 +195,45 @@ int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& an
         std::cout << "Generating visualization for " << texts.size() << " texts..." << std::endl;
         
         // Configure visualization parameters
-        int maxWords = 50;
+        blahajpi::utils::CloudConfig config;
+        
+        // Apply parameters from command-line arguments
         if (parsedArgs.count("max-words") > 0) {
             try {
-                maxWords = std::stoi(parsedArgs["max-words"]);
+                config.maxWords = std::stoi(parsedArgs["max-words"]);
             } catch (...) {
-                // Ignore conversion errors
+                // Keep default if conversion fails
             }
         }
         
-        int width = 80;
         if (parsedArgs.count("width") > 0) {
             try {
-                width = std::stoi(parsedArgs["width"]);
+                config.width = std::stoi(parsedArgs["width"]);
             } catch (...) {
-                // Ignore conversion errors
+                // Keep default if conversion fails
             }
         }
         
-        int height = 20;
         if (parsedArgs.count("height") > 0) {
             try {
-                height = std::stoi(parsedArgs["height"]);
+                config.height = std::stoi(parsedArgs["height"]);
             } catch (...) {
-                // Ignore conversion errors
+                // Keep default if conversion fails
             }
         }
         
-        bool useColor = parsedArgs.count("color") > 0;
+        config.useColor = parsedArgs.count("color") > 0;
         
         // Format type (wordcloud or bars)
-        std::string format = "wordcloud";
-        if (parsedArgs.count("format") > 0) {
-            format = parsedArgs["format"];
+        if (parsedArgs.count("format") > 0 && parsedArgs["format"] == "bars") {
+            config.useBars = true;
         }
         
+        // Show frequencies if requested
+        config.showFrequencies = parsedArgs.count("show-frequencies") > 0;
+        
         // Generate visualization
-        bool success = analyzer.generateVisualization(results, outputPath, !includeSafe);
+        bool success = analyzer.generateCustomVisualization(results, outputPath, !includeSafe, config);
         
         if (success) {
             utils::showSuccess("Visualization generated and saved to: " + outputPath);

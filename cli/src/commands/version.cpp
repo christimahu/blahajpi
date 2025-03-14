@@ -1,6 +1,11 @@
 /**
  * @file version.cpp
  * @brief Implementation of the version command
+ * 
+ * This command displays version information about the Blahaj PI application.
+ * 
+ * @author Christi Mahu
+ * @date 2024
  */
 
 #include "bpicli/commands.hpp"
@@ -12,7 +17,20 @@
 
 namespace bpicli {
 
+/**
+ * @brief Handles the version command execution
+ * 
+ * Displays detailed version, build, and environment information
+ * about the Blahaj PI application.
+ * 
+ * @param args Command arguments (unused)
+ * @param analyzer Analyzer instance
+ * @return Exit code (0 on success)
+ */
 int handleVersion(const std::vector<std::string>& args, blahajpi::Analyzer& analyzer) {
+    // Suppress unused parameter warning
+    (void)args;
+    
     // Get version information
     std::string version = utils::getVersion();
     std::string buildDate = utils::getBuildDate();
