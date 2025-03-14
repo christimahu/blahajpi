@@ -59,11 +59,12 @@ cmake-build-*/
 Thumbs.db
 
 # Generated outputs
-*/outputs/
 */models/*/
+*/results/
 models/
-outputs/
+results/
 
 # Generated documentation
 docs/doxygen/
 web/docs/
+

@@ -427,60 +427,115 @@ bool Dataset::loadFromCSV(
     std::string line;
     std::getline(file, line); // Read header line
     
-    // Parse header to find column indices
-    std::vector<std::string> headers;
-    std::stringstream headerStream(line);
-    std::string header;
+    std::cout << "Raw CSV header: '" << line << "'" << std::endl;
     
-    while (std::getline(headerStream, header, ',')) {
-        // Remove quotes and whitespace
+    // Split the header line directly without using stringstream to avoid issues
+    std::vector<std::string> headers;
+    size_t start = 0;
+    size_t end = 0;
+    bool inQuotes = false;
+    
+    while (end < line.length()) {
+        char c = line[end];
+        
+        if (c == '"') {
+            inQuotes = !inQuotes;
+        } 
+        else if (c == ',' && !inQuotes) {
+            // Found a column separator
+            std::string header = line.substr(start, end - start);
+            
+            // Clean the header: remove quotes, trim whitespace
+            header.erase(std::remove(header.begin(), header.end(), '"'), header.end());
+            header.erase(std::remove(header.begin(), header.end(), ' '), header.end());
+            header.erase(std::remove(header.begin(), header.end(), '\r'), header.end());
+            header.erase(std::remove(header.begin(), header.end(), '\n'), header.end());
+            
+            std::cout << "Extracted header: '" << header << "'" << std::endl;
+            headers.push_back(header);
+            
+            // Move to next column
+            start = end + 1;
+        }
+        
+        end++;
+    }
+    
+    // Add the last column
+    if (start < line.length()) {
+        std::string header = line.substr(start);
         header.erase(std::remove(header.begin(), header.end(), '"'), header.end());
         header.erase(std::remove(header.begin(), header.end(), ' '), header.end());
+        header.erase(std::remove(header.begin(), header.end(), '\r'), header.end());
+        header.erase(std::remove(header.begin(), header.end(), '\n'), header.end());
+        
+        std::cout << "Extracted last header: '" << header << "'" << std::endl;
         headers.push_back(header);
     }
+    
+    // Use case-insensitive string comparison for header names
+    auto headerMatch = [](const std::string& a, const std::string& b) {
+        if (a.size() != b.size()) return false;
+        
+        for (size_t i = 0; i < a.size(); i++) {
+            if (std::tolower(a[i]) != std::tolower(b[i]))
+                return false;
+        }
+        
+        return true;
+    };
     
     // Find column indices
     int labelIdx = -1;
     int textIdx = -1;
     
     for (size_t i = 0; i < headers.size(); ++i) {
-        if (headers[i] == labelColumn) {
+        std::cout << "Checking header '" << headers[i] << "' against label column '" << labelColumn << "'" << std::endl;
+        if (headerMatch(headers[i], labelColumn)) {
             labelIdx = static_cast<int>(i);
+            std::cout << "Found label column at index " << labelIdx << std::endl;
         }
-        if (headers[i] == textColumn) {
+        
+        std::cout << "Checking header '" << headers[i] << "' against text column '" << textColumn << "'" << std::endl;
+        if (headerMatch(headers[i], textColumn)) {
             textIdx = static_cast<int>(i);
+            std::cout << "Found text column at index " << textIdx << std::endl;
         }
     }
     
     if (labelIdx == -1 || textIdx == -1) {
         std::cerr << "Error: Could not find required columns in CSV file." << std::endl;
         std::cerr << "Looking for: '" << labelColumn << "' and '" << textColumn << "'" << std::endl;
-        std::cerr << "Available columns: '";
+        std::cerr << "Available columns: ";
         for (const auto& h : headers) {
-            std::cerr << h << "' '";
+            std::cerr << "'" << h << "' ";
         }
         std::cerr << std::endl;
         return false;
     }
     
-    // Parse data rows
+    // Parse data rows manually to handle CSV format issues
     while (std::getline(file, line)) {
         std::vector<std::string> values;
+        size_t pos = 0;
+        std::string token;
         bool inQuotes = false;
-        std::string value;
         
-        // Parse CSV with proper handling of quotes
-        for (char c : line) {
+        for (size_t i = 0; i < line.length(); i++) {
+            char c = line[i];
+            
             if (c == '"') {
                 inQuotes = !inQuotes;
-            } else if (c == ',' && !inQuotes) {
-                values.push_back(value);
-                value.clear();
-            } else {
-                value.push_back(c);
+            } 
+            else if (c == ',' && !inQuotes) {
+                // End of field
+                values.push_back(line.substr(pos, i - pos));
+                pos = i + 1;
             }
         }
-        values.push_back(value);
+        
+        // Add the last field
+        values.push_back(line.substr(pos));
         
         // Skip lines with wrong number of columns
         if (values.size() <= static_cast<size_t>(std::max(labelIdx, textIdx))) {
@@ -489,12 +544,20 @@ bool Dataset::loadFromCSV(
         
         // Extract label and text
         try {
-            int label = std::stoi(values[labelIdx]);
-            std::string text = values[textIdx];
+            // Clean up the label value
+            std::string labelStr = values[labelIdx];
+            labelStr.erase(std::remove(labelStr.begin(), labelStr.end(), '"'), labelStr.end());
+            labelStr.erase(std::remove(labelStr.begin(), labelStr.end(), ' '), labelStr.end());
             
-            // Remove quotes if present
-            if (!text.empty() && text.front() == '"' && text.back() == '"') {
-                text = text.substr(1, text.size() - 2);
+            int label = std::stoi(labelStr);
+            
+            // Clean up the text value
+            std::string text = values[textIdx];
+            if (!text.empty()) {
+                // Remove surrounding quotes if present
+                if (text.front() == '"' && text.back() == '"') {
+                    text = text.substr(1, text.size() - 2);
+                }
             }
             
             data.emplace_back(label, text);

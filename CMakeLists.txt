@@ -144,7 +144,7 @@ install(FILES
 )
 
 # Create output directories in the build folder
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/outputs)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/results)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/models)
 
 # Copy configuration files to build directory

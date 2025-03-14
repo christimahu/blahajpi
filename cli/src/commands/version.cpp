@@ -80,7 +80,7 @@ int handleVersion(const std::vector<std::string>& args, blahajpi::Analyzer& anal
     
     // Show copyright notice
     std::cout << "\nCopyright © 2025, Blahaj PI Team" << std::endl;
-    std::cout << "License: MIT License" << std::endl;
+    std::cout << "License: GNU GENERAL PUBLIC LICENSE V3" << std::endl;
     
     return 0;
 }

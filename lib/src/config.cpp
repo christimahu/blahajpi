@@ -267,7 +267,7 @@ void Config::loadDefaults() {
     
     // Path settings
     configValues["model-dir"] = "../models/default"; // Directory for model files
-    configValues["output-dir"] = "../outputs";       // Directory for output files
+    configValues["output-dir"] = "../results";       // Directory for output files
     
     // Dataset column settings
     configValues["label-column"] = "label";          // Default label column name

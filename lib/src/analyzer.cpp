@@ -215,9 +215,18 @@ public:
     }
     
     bool trainModel(const std::string& dataPath, const std::string& outputPath) {
-        // Load dataset
+        // Get column names from configuration
+        std::string labelColumn = config_.getString("label-column", "label");
+        std::string textColumn = config_.getString("text-column", "text");
+        
+        // Debug output to verify configuration
+        std::cout << "Using column names for training: " << std::endl;
+        std::cout << "  Label column: '" << labelColumn << "'" << std::endl;
+        std::cout << "  Text column: '" << textColumn << "'" << std::endl;
+        
+        // Load dataset with explicit column names
         utils::Dataset dataset;
-        if (!dataset.loadFromFile(dataPath)) {
+        if (!dataset.loadFromFile(dataPath, utils::Dataset::Format::AUTO, labelColumn, textColumn)) {
             std::cerr << "Failed to load dataset from: " << dataPath << std::endl;
             return false;
         }
@@ -319,9 +328,11 @@ public:
         }
         
         if (textsToVisualize.empty()) {
-            std::cerr << "No texts available for visualization." << std::endl;
+            std::cerr << "No content to visualize." << std::endl;
             return false;
         }
+        
+        std::cout << "Generating visualization for " << textsToVisualize.size() << " texts..." << std::endl;
         
         // Configure word cloud
         utils::WordCloud wordCloud;
