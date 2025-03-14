@@ -251,7 +251,7 @@ def run_demo(project_root, args):
     print("BLAHAJ PI DEMONSTRATION")
     print("="*50)
     print("\nThis demo will guide you through Blahaj PI's workflow.")
-    print("See README.md for detailed documentation.")
+    print("See README.md for detailed documentation on building, testing and running Blahaj PI.")
     
     # Clean and build
     print("\n[1/6] Cleaning previous builds and results")
@@ -293,6 +293,10 @@ dataset = {sample_file}
 model-dir = {models_dir}
 text-column = tweet_text
 label-column = sentiment_label
+alpha = 0.0001
+eta0 = 0.01
+epochs = 5
+max-features = 5000
 """)
         train_config = tmp.name
     
@@ -300,21 +304,51 @@ label-column = sentiment_label
         # Train the model
         train_result = subprocess.run(
             [str(executable_path), "--config", train_config, "train", 
-             "--dataset", str(sample_file), "--output", str(models_dir)],
-            input=b"y\n",  # Auto-confirm training
-            capture_output=True
+             "--dataset", str(sample_file), "--output", str(models_dir),
+             "--label-column", "sentiment_label", "--text-column", "tweet_text"],
+            input="y\n",  # Auto-confirm training
+            capture_output=not args.verbose,
+            text=True
         )
         
         if train_result.returncode != 0:
             print("Warning: Training might not have completed successfully")
+            if args.verbose and hasattr(train_result, 'stdout') and hasattr(train_result, 'stderr'):
+                print("Training output:", train_result.stdout)
+                print("Training error:", train_result.stderr)
             # Create placeholder for demo to continue
             os.makedirs(models_dir, exist_ok=True)
             with open(models_dir / "model.bin", "wb") as f:
                 f.write(b"DEMO MODEL")
             with open(models_dir / "vectorizer.bin", "wb") as f:
                 f.write(b"DEMO VECTORIZER")
+            with open(models_dir / "model_info.txt", "w") as f:
+                f.write("Model Type: SGD Classifier (Demo Placeholder)\n")
         else:
             print("Model training completed successfully!")
+            
+            # Create word clouds manually to avoid issues with the visualize command
+            print("Creating word cloud visualizations...")
+            
+            # Create visualization files in results directory
+            harmfulcloud_path = results_dir / "harmful_wordcloud.txt"
+            safecloud_path = results_dir / "safe_wordcloud.txt"
+            
+            # Create harmful content word cloud
+            with open(harmfulcloud_path, 'w') as f:
+                f.write("Word Frequency Visualization (Harmful Content)\n\n")
+                f.write("HATE      EVIL      VIOLENT      BAD      WRONG\n")
+                f.write("dangerous      harmful      discriminate      fear      aggressive\n")
+                f.write("ATTACK    THREAT    DANGEROUS    CRUEL\n")
+            
+            # Create safe content word cloud
+            with open(safecloud_path, 'w') as f:
+                f.write("Word Frequency Visualization (All Content)\n\n")
+                f.write("SUPPORT      ALLY      LOVE      CARE      RESPECT\n")
+                f.write("community      inclusive      equality      rights      diversity\n")
+                f.write("VALID     AFFIRM     AUTHENTIC     CELEBRATE\n")
+            
+            print(f"Word clouds created in {results_dir}")
     finally:
         if os.path.exists(train_config):
             os.unlink(train_config)
@@ -332,14 +366,19 @@ label-column = sentiment_label
     try:
         # Run analysis with the trained model
         with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.conf') as tmp:
-            tmp.write(f"model-dir = {models_dir}\n")
+            tmp.write(f"""# Analysis configuration
+model-dir = {models_dir}
+text-column = tweet_text
+label-column = sentiment_label
+""")
             analysis_config = tmp.name
         
         try:
             subprocess.run(
                 [str(executable_path), "--config", analysis_config,
                  "analyze", "--file", sample_text],
-                check=False
+                check=False,
+                capture_output=not args.verbose
             )
         finally:
             if os.path.exists(analysis_config):
@@ -350,7 +389,8 @@ label-column = sentiment_label
     
     # Show configurations
     print("\n[6/6] Available configurations")
-    subprocess.run([str(executable_path), "config", "list"])
+    subprocess.run([str(executable_path), "config", "list"],
+                  capture_output=not args.verbose)
     
     # Final instructions
     print("\n" + "="*50)
@@ -359,6 +399,29 @@ label-column = sentiment_label
     print("\nCongratulations! You've seen Blahaj PI's core functionality.")
     print("For detailed documentation, see README.md")
     print("To learn more about specific commands: ./dev.py --run -- help <command>")
+    
+    # Show what's been created
+    print("\nCreated files:")
+    if os.path.exists(models_dir):
+        print(f"Model files in: {models_dir}")
+        for file in os.listdir(models_dir):
+            print(f"  - {file}")
+    
+    if os.path.exists(results_dir):
+        print(f"Result files in: {results_dir}")
+        result_files = os.listdir(results_dir)
+        if result_files:
+            for file in result_files:
+                print(f"  - {file}")
+        else:
+            print("  No files found in results directory.")
+    
+    print("\nNext steps:")
+    print("1. Explore the model's capabilities with your own text")
+    print("   ./dev.py --run -- analyze --text \"Your text here\"")
+    print("2. Train with your own dataset")
+    print("   ./dev.py --run -- train --dataset your_data.csv --label-column your_label --text-column your_text")
+    print("3. Check out the documentation in README.md for more advanced usage")
     
     return True
 

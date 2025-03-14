@@ -76,6 +76,11 @@ int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& an
     std::string textColumn = parsedArgs.count("text-column") > 0 ? 
                             parsedArgs["text-column"] : "tweet_text";
     
+    // Debug output to verify column names
+    std::cout << "Using column names for visualization: " << std::endl;
+    std::cout << "  Label column: '" << labelColumn << "'" << std::endl;
+    std::cout << "  Text column: '" << textColumn << "'" << std::endl;
+    
     try {
         // Check if this is a CSV file with analysis results
         if (inputPath.ends_with(".csv")) {
@@ -85,71 +90,158 @@ int handleVisualize(const std::vector<std::string>& args, blahajpi::Analyzer& an
                 return 1;
             }
             
+            // Debug - print first few lines of the file
+            std::cout << "First few lines of the CSV file:" << std::endl;
             std::string line;
-            bool firstLine = true;
+            int lineCount = 0;
+            std::stringstream previewStream;
+            while (std::getline(file, line) && lineCount < 3) {
+                previewStream << line << std::endl;
+                lineCount++;
+            }
+            std::cout << previewStream.str() << std::endl;
             
-            // Find column indices
+            // Reset file position
+            file.clear();
+            file.seekg(0);
+            
+            // Read header line
+            std::getline(file, line);
+            std::cout << "CSV header: " << line << std::endl;
+            
+            // Parse header to find column indices - with improved robustness
+            std::vector<std::string> headers;
+            std::stringstream headerStream(line);
+            std::string headerField;
+            
+            // Handle quoted fields and commas properly
+            bool inQuotedField = false;
+            std::string currentField;
+            
+            for (char c : line) {
+                if (c == '"') {
+                    inQuotedField = !inQuotedField;
+                } else if (c == ',' && !inQuotedField) {
+                    // End of field
+                    // Trim whitespace and quotes
+                    currentField.erase(0, currentField.find_first_not_of(" \t\""));
+                    size_t lastNonSpace = currentField.find_last_not_of(" \t\"");
+                    if (lastNonSpace != std::string::npos) {
+                        currentField.erase(lastNonSpace + 1);
+                    }
+                    headers.push_back(currentField);
+                    currentField.clear();
+                } else {
+                    currentField += c;
+                }
+            }
+            
+            // Add the last field if not empty
+            if (!currentField.empty()) {
+                // Trim whitespace and quotes
+                currentField.erase(0, currentField.find_first_not_of(" \t\""));
+                size_t lastNonSpace = currentField.find_last_not_of(" \t\"");
+                if (lastNonSpace != std::string::npos) {
+                    currentField.erase(lastNonSpace + 1);
+                }
+                headers.push_back(currentField);
+            }
+            
+            // Debug - print all headers
+            std::cout << "Parsed headers (" << headers.size() << "):" << std::endl;
+            for (size_t i = 0; i < headers.size(); i++) {
+                std::cout << "  " << i << ": '" << headers[i] << "'" << std::endl;
+            }
+            
+            // Find column indices using case-insensitive matching
+            auto caseInsensitiveCompare = [](const std::string& a, const std::string& b) -> bool {
+                if (a.size() != b.size()) return false;
+                return std::equal(a.begin(), a.end(), b.begin(),
+                                 [](char a, char b) {
+                                     return std::tolower(a) == std::tolower(b);
+                                 });
+            };
+            
             int textIndex = -1;
             int sentimentIndex = -1;
             
-            while (std::getline(file, line)) {
-                std::vector<std::string> columns;
-                std::string column;
-                std::stringstream ss(line);
-                bool inQuotes = false;
+            for (size_t i = 0; i < headers.size(); ++i) {
+                std::string header = headers[i];
                 
-                while (ss.good()) {
-                    char c = ss.get();
-                    if (ss.eof()) break;
-                    
+                // Match with provided column names
+                if (caseInsensitiveCompare(header, textColumn)) {
+                    textIndex = static_cast<int>(i);
+                    std::cout << "Found text column at index " << textIndex << std::endl;
+                }
+                
+                if (caseInsensitiveCompare(header, labelColumn)) {
+                    sentimentIndex = static_cast<int>(i);
+                    std::cout << "Found label column at index " << sentimentIndex << std::endl;
+                }
+            }
+            
+            if (textIndex == -1) {
+                utils::showError("Could not find text column in CSV");
+                std::cout << "Available columns: ";
+                for (const auto& header : headers) {
+                    std::cout << "'" << header << "' ";
+                }
+                std::cout << std::endl;
+                std::cout << "Looking for column: '" << textColumn << "'" << std::endl;
+                return 1;
+            }
+            
+            // Process data rows with more robust CSV parsing
+            while (std::getline(file, line)) {
+                std::vector<std::string> values;
+                
+                // Handle quoted fields and commas properly
+                inQuotedField = false;
+                currentField.clear();
+                
+                for (char c : line) {
                     if (c == '"') {
-                        inQuotes = !inQuotes;
-                    } else if (c == ',' && !inQuotes) {
-                        columns.push_back(column);
-                        column.clear();
+                        inQuotedField = !inQuotedField;
+                    } else if (c == ',' && !inQuotedField) {
+                        // End of field
+                        values.push_back(currentField);
+                        currentField.clear();
                     } else {
-                        column += c;
+                        currentField += c;
                     }
                 }
-                columns.push_back(column);
                 
-                if (firstLine) {
-                    // Parse header to find column indices
-                    for (size_t i = 0; i < columns.size(); ++i) {
-                        std::string header = columns[i];
-                        std::transform(header.begin(), header.end(), header.begin(), ::tolower);
-                        
-                        // Match with provided column names
-                        if (header == textColumn || header == "text" || header == "content") {
-                            textIndex = static_cast<int>(i);
-                        } else if (header == labelColumn || header == "label" || header == "sentiment") {
-                            sentimentIndex = static_cast<int>(i);
-                        }
+                // Add the last field
+                values.push_back(currentField);
+                
+                // Skip lines with wrong number of columns
+                if (values.size() <= static_cast<size_t>(std::max(textIndex, sentimentIndex))) {
+                    continue;
+                }
+                
+                // Clean text value (remove quotes)
+                std::string text = values[textIndex];
+                if (text.size() >= 2 && text.front() == '"' && text.back() == '"') {
+                    text = text.substr(1, text.size() - 2);
+                }
+                
+                // Extract and clean label
+                std::string sentimentValue = "0";  // Default
+                if (sentimentIndex >= 0) {
+                    sentimentValue = values[sentimentIndex];
+                    // Remove quotes and trim
+                    sentimentValue.erase(std::remove(sentimentValue.begin(), sentimentValue.end(), '"'), sentimentValue.end());
+                    sentimentValue.erase(std::remove(sentimentValue.begin(), sentimentValue.end(), ' '), sentimentValue.end());
+                }
+                
+                // Check if we should filter by sentiment
+                if (sentimentIndex != -1 && !includeSafe) {
+                    // Only include harmful content (label 4 or "Harmful")
+                    if (sentimentValue == "4" || sentimentValue == "Harmful") {
+                        texts.push_back(text);
                     }
-                    
-                    if (textIndex == -1) {
-                        utils::showError("Could not find text column in CSV");
-                        return 1;
-                    }
-                    
-                    firstLine = false;
                 } else {
-                    // Process data rows
-                    if (textIndex < static_cast<int>(columns.size())) {
-                        std::string text = columns[textIndex];
-                        
-                        // Check if we should filter by sentiment
-                        if (sentimentIndex != -1 && !includeSafe) {
-                            if (sentimentIndex < static_cast<int>(columns.size())) {
-                                std::string sentiment = columns[sentimentIndex];
-                                if (sentiment == "Harmful" || sentiment == "4") {
-                                    texts.push_back(text);
-                                }
-                            }
-                        } else {
-                            texts.push_back(text);
-                        }
-                    }
+                    texts.push_back(text);
                 }
             }
         } else {
