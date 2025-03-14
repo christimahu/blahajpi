@@ -4,7 +4,7 @@ Thank you for considering contributing to Blahaj PI! This document outlines the 
 
 ## Code of Conduct
 
-This project adheres to the [Contributor Covenant](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior at [https://blahajpi.com/contact/](https://blahajpi.com/contact/). All complaints will be reviewed and investigated promptly and fairly. 
+This project adheres to the [Contributor Covenant](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to Christi Mahu via [https://ChristiMahu.com](https://ChristiMahu.com).
 
 ## How Can I Contribute?
 
@@ -49,8 +49,9 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
 2. Update documentation as necessary.
 3. Add tests that verify your changes.
 4. Make sure all tests pass.
-5. The PR should clearly describe the problem and solution.
-6. The PR will be reviewed by at least one maintainer.
+5. Ensure your changes meet the required test coverage threshold.
+6. The PR should clearly describe the problem and solution.
+7. The PR will be reviewed by at least one maintainer.
 
 #### Coding Conventions
 
@@ -58,6 +59,26 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
   - Use C++23 features where appropriate.
   - Follow the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
   - Prefer functional approaches where they improve readability.
+  - We use clang-format for automated code formatting (configuration file in repository root).
+
+- **Formatting Conventions**:
+  - Brace style: Opening braces on the same line, not on a new line:
+    ```cpp
+    // Correct
+    int main() {
+        // code
+    }
+    
+    // Incorrect
+    int main()
+    {
+        // code
+    }
+    ```
+  - Indentation: 4 spaces (no tabs)
+  - Line length: Maximum 100 characters
+  - Function and class definitions should have braces on the same line
+  - Control statements (if, for, while, etc.) should always use braces, even for single-line blocks
 
 - **Naming Conventions**:
   - Use `snake_case` for variables, functions, and methods.
@@ -81,6 +102,14 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
   - Use move semantics where appropriate.
   - Use parallelism for operations on large datasets.
   - Document performance characteristics for complex algorithms.
+
+#### Test Requirements
+
+- All new code must be covered by tests.
+- Pull requests must maintain or improve the current test coverage ratio.
+- The current minimum test coverage requirement must be met (specific threshold to be determined).
+- Tests should cover both normal operation and error conditions.
+- Integration tests should be included for features that span multiple components.
 
 ## Development Setup
 
@@ -114,6 +143,11 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
 3. Run the tests:
    ```bash
    python tools/scripts/dev.py --test
+   ```
+
+4. Run the linter (clang-format):
+   ```bash
+   python tools/scripts/dev.py --format
    ```
 
 ## Writing Tests

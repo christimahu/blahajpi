@@ -57,3 +57,14 @@ cmake-build-*/
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Generated outputs
+*/models/*/
+*/results/
+models/
+results/
+
+# Generated documentation
+docs/doxygen/
+web/docs/
+
