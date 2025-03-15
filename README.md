@@ -4,7 +4,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![C++: 23](https://img.shields.io/badge/C%2B%2B-23-blue.svg)](https://en.cppreference.com/w/cpp/23)
+[![Tests: Passing](https://img.shields.io/badge/Tests-Passing-brightgreen.svg)](https://github.com/christimahu/blahajpi/actions)
 [![Cuddles: Maximum](https://img.shields.io/badge/Cuddles-Maximum-ff69b4.svg)](https://blahajpi.com)
+
+
 
 ## 💜 What is Blahaj PI? 💜
 
@@ -23,7 +26,7 @@ Just like the cuddly IKEA shark that has become a beloved symbol in our communit
 - 🧮 **Batch Processing:** Analyzes multiple files for efficient processing
 - ⚙️  **Configurable Models:** Different configurations for speed, accuracy, or balanced performance
 - 🔧 **Command Line Interface:** Easy to use for both beginners and experts
-- 🧪 **Comprehensive Testing:** Ensures reliable performance
+- 🧪 **Comprehensive Testing:** Ensures reliable and secure performance
 
 ## 📋 Getting Started 📋
 
@@ -32,6 +35,7 @@ Just like the cuddly IKEA shark that has become a beloved symbol in our communit
 - C++23 compatible compiler
 - CMake 3.14 or higher
 - Python 3.6+ (for build scripts)
+- Google Test (for running tests)
 
 ### Installation
 
@@ -53,6 +57,24 @@ Just like the cuddly IKEA shark that has become a beloved symbol in our communit
    cmake --build .
    ```
 
+## 💫 Quick Start with Demo 💫
+
+For a guided tour of all features, simply run:
+
+```bash
+./dev.py --demo
+```
+
+This will:
+1. Clean any previous builds and results
+2. Build the project if needed (including running tests)
+3. Train a model using example data
+4. Demonstrate text analysis
+5. Show visualization capabilities
+6. Explain configuration options
+
+The demo is perfect for first-time users or when showcasing the tool to others!
+
 ## 🚀 Full Tutorial: Using Blahaj PI 🚀
 
 ### Step 1: Build the Project 🔨
@@ -65,7 +87,24 @@ First, we need to build Blahaj PI:
 
 This compiles the C++ code and creates the executable in the `build/bin` directory. Tests run automatically during build to ensure everything works correctly.
 
-### Step 2: Train Your Shark Detective 🦈🎓
+### Step 2: Testing 🧪
+
+Though the build runs tests and stops on test failure, you may want to get deeply familiar with the tests as a means of learning about the codebase. Here are a few tests to try:
+
+```bash
+# Run the text processor tests to understand how preprocessing works
+./dev.py --test --filter=text_processor_test
+
+# Run sentiment analysis tests to see expected behaviors
+./dev.py --test --filter=analyzer_test
+
+# Run security tests to understand safety measures
+./dev.py --test --filter=security_test
+```
+
+These tests showcase core functionality and can help you understand how the components work together.
+
+### Step 3: Train Your Shark Detective 🦈🎓
 
 Before Blahaj can analyze text, it needs training on what harmful content looks like:
 
@@ -80,7 +119,7 @@ This trains a machine learning model using labeled examples from the included sa
 
 The model learns patterns associated with each category and saves the trained model to the specified location.
 
-### Step 3: Analyze Text 🔍
+### Step 4: Analyze Text 🔍
 
 Now Blahaj is ready to analyze text from the example dataset:
 
@@ -91,7 +130,7 @@ Now Blahaj is ready to analyze text from the example dataset:
 
 Blahaj will analyze the content and tell you whether it appears harmful or safe, along with a confidence score and explanation. Results are stored in the `results` directory at the project root.
 
-### Step 4: Visualize Results 📊
+### Step 5: Visualize Results 📊
 
 Generate visualizations to understand patterns in analyzed content:
 
@@ -101,7 +140,7 @@ Generate visualizations to understand patterns in analyzed content:
 
 This creates a word cloud showing the most frequent terms in the analyzed content, helping you identify patterns of harmful language.
 
-### Step 5: Batch Processing 📚
+### Step 6: Batch Processing 📚
 
 For demonstration purposes, you can see how batch processing would work:
 
@@ -111,23 +150,33 @@ For demonstration purposes, you can see how batch processing would work:
 
 This processes all files in the example directory and provides a summary report.
 
-## 💫 Quick Start with Demo 💫
+## 🧪 Testing Blahaj PI 🧪
 
-For a guided tour of all features, simply run:
+We take testing seriously to ensure Blahaj PI is both accurate and secure:
 
 ```bash
-./dev.py --demo
+# Run all tests
+./dev.py --test
+
+# Run only unit tests
+./dev.py --test --unit
+
+# Run only integration tests
+./dev.py --test --integration
+
+# Run with security sanitizers
+./dev.py --run-asan  # Address Sanitizer
+./dev.py --run-ubsan  # Undefined Behavior Sanitizer
 ```
 
-This will:
-1. Clean any previous builds and results
-2. Build the project if needed
-3. Train a model using example data
-4. Demonstrate text analysis
-5. Show visualization capabilities
-6. Explain configuration options
+Our testing suite includes:
+- Unit tests for all components with Google Test
+- Integration tests for component interactions
+- End-to-end tests for workflow validation
+- Security tests to ensure data safety
+- Fuzz testing to verify robustness against unexpected inputs
 
-The demo is perfect for first-time users or when showcasing the tool to others!
+See [TESTING.md](TESTING.md) for detailed testing documentation.
 
 ## ⚙️ Configuration Options ⚙️
 
