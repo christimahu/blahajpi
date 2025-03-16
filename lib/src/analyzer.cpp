@@ -6,7 +6,7 @@
  * providing functionality to analyze text content for potentially harmful material.
  * 
  * @author Christi Mahu
- * @date 2024
+ * @date 2025
  */
 
 #include "blahajpi/analyzer.hpp"

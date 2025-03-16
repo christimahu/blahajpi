@@ -6,7 +6,7 @@
 * including feature extraction, vocabulary building, and document transformation.
 * 
 * @author BlahajPI Team
-* @date 2024
+* @date 2025
 */
 
 #include "blahajpi/preprocessing/vectorizer.hpp"

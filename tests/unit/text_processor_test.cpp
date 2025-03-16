@@ -6,7 +6,7 @@
  * including edge cases, normal operation, and special character handling.
  * 
  * @author BlahajPI Team
- * @date 2024
+ * @date 2025
  */
 
 #include "blahajpi/preprocessing/text_processor.hpp"

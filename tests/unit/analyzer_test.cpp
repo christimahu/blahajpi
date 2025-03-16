@@ -6,7 +6,7 @@
  * including text preprocessing, model inference, and result generation.
  * 
  * @author BlahajPI Team
- * @date 2024
+ * @date 2025
  */
 
 #include "blahajpi/analyzer.hpp"

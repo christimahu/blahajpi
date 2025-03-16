@@ -6,7 +6,7 @@
  * covering normal use cases, edge cases, and boundary conditions.
  * 
  * @author BlahajPI Team
- * @date 2024
+ * @date 2025
  */
 
 #include "blahajpi/evaluation/metrics.hpp"
