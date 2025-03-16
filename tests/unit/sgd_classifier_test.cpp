@@ -445,7 +445,10 @@ TEST_F(SGDClassifierTest, IncrementalLearning) {
     
     // Train on first half
     classifier.fit(firstHalfFeatures, firstHalfLabels);
+    
+    // Score after first half of training - using the variable to avoid warning
     double scoreAfterFirstHalf = classifier.score(linearFeatures, linearLabels);
+    std::cout << "Score after first half of training: " << scoreAfterFirstHalf << std::endl;
     
     // Continue training by training on second half
     classifier.fit(secondHalfFeatures, secondHalfLabels); 

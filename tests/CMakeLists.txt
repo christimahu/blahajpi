@@ -21,7 +21,6 @@ if (NOT TARGET gtest)
     endif()
 endif()
 
-# Define test categories with labels
 set(UNIT_TESTS
     analyzer_test
     text_processor_test
@@ -29,6 +28,9 @@ set(UNIT_TESTS
     sgd_classifier_test
     neural_network_test
     metrics_test
+    config_test
+	dataset_test 
+	word_cloud_test
 )
 
 set(INTEGRATION_TESTS
