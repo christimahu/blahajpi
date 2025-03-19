@@ -1,6 +1,7 @@
 /**
  * @file analyzer_test.cpp
  * @brief Comprehensive unit tests for the Analyzer class
+ * @ingroup tests
  * 
  * These tests verify the functionality of the sentiment analysis engine,
  * including text preprocessing, model inference, and result generation.
@@ -23,7 +24,8 @@ namespace {
  * @class AnalyzerTest
  * @brief Test fixture for Analyzer unit tests
  * 
- * This fixture provides common setup for testing the sentiment analysis engine.
+ * This fixture provides common setup for testing the sentiment analysis engine,
+ * including temporary path creation and test data generation.
  */
 class AnalyzerTest : public ::testing::Test {
 protected:
@@ -106,6 +108,7 @@ protected:
 };
 
 /**
+ * @test
  * @brief Tests constructor with configuration file
  * 
  * Verifies that the Analyzer can be constructed with a
@@ -127,6 +130,7 @@ TEST_F(AnalyzerTest, ConstructorWithConfig) {
 }
 
 /**
+ * @test
  * @brief Tests loading configuration
  * 
  * Verifies that configuration settings can be loaded
@@ -149,6 +153,7 @@ TEST_F(AnalyzerTest, LoadConfiguration) {
 }
 
 /**
+ * @test
  * @brief Tests setting and getting configuration
  * 
  * Verifies that individual configuration settings
@@ -177,6 +182,7 @@ TEST_F(AnalyzerTest, SetAndGetConfig) {
 }
 
 /**
+ * @test
  * @brief Tests model training
  * 
  * Verifies that the Analyzer can train a sentiment analysis
@@ -203,6 +209,7 @@ TEST_F(AnalyzerTest, ModelTraining) {
 }
 
 /**
+ * @test
  * @brief Tests loading a trained model
  * 
  * Verifies that a previously trained model can be loaded
@@ -224,6 +231,7 @@ TEST_F(AnalyzerTest, LoadModel) {
 }
 
 /**
+ * @test
  * @brief Tests text analysis
  * 
  * Verifies that the Analyzer correctly classifies text
@@ -273,6 +281,7 @@ TEST_F(AnalyzerTest, TextAnalysis) {
 }
 
 /**
+ * @test
  * @brief Tests batch text analysis
  * 
  * Verifies that the Analyzer can process multiple texts
@@ -313,6 +322,7 @@ TEST_F(AnalyzerTest, BatchAnalysis) {
 }
 
 /**
+ * @test
  * @brief Tests visualization generation
  * 
  * Verifies that the Analyzer can generate word cloud
@@ -367,6 +377,7 @@ TEST_F(AnalyzerTest, Visualization) {
 }
 
 /**
+ * @test
  * @brief Tests result serialization
  * 
  * Verifies that AnalysisResult objects can be converted to and
@@ -412,6 +423,7 @@ TEST_F(AnalyzerTest, ResultSerialization) {
 }
 
 /**
+ * @test
  * @brief Tests error handling
  * 
  * Verifies that the Analyzer properly handles error conditions

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-test_api.py - End-to-end test for BlahajPI API
+@file test_api.py
+@brief End-to-end test for BlahajPI API
+@ingroup e2e_tests
+
+Contains end-to-end tests for the BlahajPI API functionality,
+verifying that the API works correctly in a real environment.
 """
 
 import os
@@ -11,8 +16,23 @@ import json
 import tempfile
 
 class APITest(unittest.TestCase):
+    """
+    @brief Test suite for API end-to-end tests
+    @ingroup e2e_tests
+    
+    Tests the BlahajPI API by executing commands and verifying
+    their behavior with the executable.
+    """
+    
     def test_version_command_api(self):
-        """Test that the version command works as an API"""
+        """
+        @test
+        @brief Test that the version command works as an API
+        @ingroup e2e_tests
+        
+        Verifies that the version command runs through the API and
+        returns appropriate information.
+        """
         # Just check if executable exists
         blahajpi_exe = "./blahajpi"
         if os.name == 'nt':  # Windows
@@ -32,7 +52,14 @@ class APITest(unittest.TestCase):
         self.assertIn("Version", result.stdout)
 
     def test_help_command_api(self):
-        """Test that the help command works as an API"""
+        """
+        @test
+        @brief Test that the help command works as an API
+        @ingroup e2e_tests
+        
+        Verifies that the help command runs through the API and
+        returns appropriate information.
+        """
         # Just check if executable exists
         blahajpi_exe = "./blahajpi"
         if os.name == 'nt':  # Windows

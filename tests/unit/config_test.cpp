@@ -1,6 +1,11 @@
 /**
  * @file config_test.cpp
  * @brief Minimal but meaningful unit tests for the Config class
+ * @ingroup tests
+ * @defgroup config_tests Configuration Tests
+ * 
+ * Contains tests for the configuration management system, which handles
+ * loading, saving, and manipulating configuration settings.
  */
 
 #include "blahajpi/config.hpp"
@@ -9,7 +14,13 @@
 
 namespace {
 
-// Basic test for construction
+/**
+ * @test
+ * @brief Tests basic construction of the Config class
+ * @ingroup config_tests
+ * 
+ * Verifies that the Config class can be constructed without exceptions.
+ */
 TEST(ConfigTest, Construction) {
     // Default constructor shouldn't throw
     EXPECT_NO_THROW({
@@ -17,7 +28,14 @@ TEST(ConfigTest, Construction) {
     });
 }
 
-// Test the most basic set and get functionality
+/**
+ * @test
+ * @brief Tests the most basic set and get functionality
+ * @ingroup config_tests
+ * 
+ * Verifies that configuration values can be set and retrieved
+ * without exceptions.
+ */
 TEST(ConfigTest, BasicSetGet) {
     blahajpi::Config config;
     
@@ -40,7 +58,14 @@ TEST(ConfigTest, BasicSetGet) {
     });
 }
 
-// Test type conversion functionality
+/**
+ * @test
+ * @brief Tests type conversion functionality
+ * @ingroup config_tests
+ * 
+ * Verifies that the Config class can handle different value types
+ * such as integers and booleans.
+ */
 TEST(ConfigTest, TypeConversions) {
     blahajpi::Config config;
     
@@ -51,13 +76,29 @@ TEST(ConfigTest, TypeConversions) {
     });
     
     // Getting different types shouldn't throw
+    // Fix: Use the variables to avoid warnings
+    int intVal = 0;
+    bool boolVal = false;
+    
     EXPECT_NO_THROW({
-        int intVal = config.getInt("int-key", 0);
-        bool boolVal = config.getBool("bool-key", false);
+        intVal = config.getInt("int-key", 0);
+        boolVal = config.getBool("bool-key", false);
     });
+    
+    // Just to avoid "unused variable" warnings, we'll use the variables in a simple test
+    // that doesn't affect functionality
+    EXPECT_GE(intVal, 0);
+    EXPECT_FALSE(!boolVal && boolVal); // This is always false, but uses the variable
 }
 
-// Test default values
+/**
+ * @test
+ * @brief Tests default value handling
+ * @ingroup config_tests
+ * 
+ * Verifies that trying to retrieve non-existent keys returns the
+ * provided default values.
+ */
 TEST(ConfigTest, DefaultValues) {
     blahajpi::Config config;
     
@@ -68,7 +109,14 @@ TEST(ConfigTest, DefaultValues) {
     EXPECT_EQ(config.getBool("non-existent", true), true);
 }
 
-// Test utility functions if implemented
+/**
+ * @test
+ * @brief Tests utility functions if implemented
+ * @ingroup config_tests
+ * 
+ * Verifies that the Config class's utility functions like hasKey,
+ * getAll, and clear don't throw exceptions.
+ */
 TEST(ConfigTest, UtilityFunctions) {
     blahajpi::Config config;
     

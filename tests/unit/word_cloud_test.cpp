@@ -1,6 +1,11 @@
 /**
  * @file word_cloud_test.cpp
  * @brief Unit tests for the WordCloud class
+ * @ingroup tests
+ * @defgroup word_cloud_tests Word Cloud Tests
+ * 
+ * Contains tests for the word cloud visualization component,
+ * which generates text-based visualizations of word frequencies.
  */
 
 #include "blahajpi/utils/word_cloud.hpp"
@@ -15,8 +20,19 @@
 
 namespace {
 
+/**
+ * @brief Test fixture for WordCloud tests
+ * @ingroup word_cloud_tests
+ * 
+ * Provides test data and example texts for word cloud tests.
+ */
 class WordCloudTest : public ::testing::Test {
 protected:
+    /**
+     * @brief Set up test data
+     * 
+     * Creates sample texts and analysis results for word cloud generation.
+     */
     void SetUp() override {
         // Create temporary directory
         tempDir = std::filesystem::temp_directory_path() / "blahajpi_tests";
@@ -57,26 +73,50 @@ protected:
         }
     }
     
+    /**
+     * @brief Clean up temporary files
+     * 
+     * Removes the temporary directory created during testing.
+     */
     void TearDown() override {
         if (std::filesystem::exists(tempDir)) {
             std::filesystem::remove_all(tempDir);
         }
     }
     
+    /** Path to temporary directory */
     std::filesystem::path tempDir;
+    
+    /** Example safe texts */
     std::vector<std::string> safeTexts;
+    
+    /** Example harmful texts */
     std::vector<std::string> harmfulTexts;
+    
+    /** Sample analysis results */
     std::vector<blahajpi::AnalysisResult> analysisResults;
 };
 
-// Test basic construction
+/**
+ * @test
+ * @brief Tests basic construction
+ * @ingroup word_cloud_tests
+ * 
+ * Verifies that the WordCloud class can be constructed.
+ */
 TEST_F(WordCloudTest, Construction) {
     EXPECT_NO_THROW({
         blahajpi::utils::WordCloud wordCloud;
     });
 }
 
-// Test basic word cloud generation
+/**
+ * @test
+ * @brief Tests basic word cloud generation
+ * @ingroup word_cloud_tests
+ * 
+ * Verifies that a word cloud can be generated from sample texts.
+ */
 TEST_F(WordCloudTest, BasicGeneration) {
     blahajpi::utils::WordCloud wordCloud;
     
@@ -88,7 +128,13 @@ TEST_F(WordCloudTest, BasicGeneration) {
     EXPECT_FALSE(cloud.empty());
 }
 
-// Test custom word cloud generation
+/**
+ * @test
+ * @brief Tests custom word cloud generation
+ * @ingroup word_cloud_tests
+ * 
+ * Verifies that a word cloud can be generated with custom configuration.
+ */
 TEST_F(WordCloudTest, CustomGeneration) {
     blahajpi::utils::WordCloud wordCloud;
     
@@ -107,7 +153,13 @@ TEST_F(WordCloudTest, CustomGeneration) {
     EXPECT_FALSE(cloud.empty());
 }
 
-// Test saving word cloud to file
+/**
+ * @test
+ * @brief Tests saving word cloud to file
+ * @ingroup word_cloud_tests
+ * 
+ * Verifies that a word cloud can be saved to a file.
+ */
 TEST_F(WordCloudTest, SaveToFile) {
     blahajpi::utils::WordCloud wordCloud;
     
@@ -130,7 +182,13 @@ TEST_F(WordCloudTest, SaveToFile) {
     }
 }
 
-// Test display to console (captures output to verify it works)
+/**
+ * @test
+ * @brief Tests display to console
+ * @ingroup word_cloud_tests
+ * 
+ * Verifies that a word cloud can be displayed to the console.
+ */
 TEST_F(WordCloudTest, DisplayToConsole) {
     blahajpi::utils::WordCloud wordCloud;
     
@@ -148,7 +206,13 @@ TEST_F(WordCloudTest, DisplayToConsole) {
     EXPECT_FALSE(buffer.str().empty());
 }
 
-// Test empty input handling
+/**
+ * @test
+ * @brief Tests empty input handling
+ * @ingroup word_cloud_tests
+ * 
+ * Verifies that the word cloud generator handles empty input gracefully.
+ */
 TEST_F(WordCloudTest, EmptyInput) {
     blahajpi::utils::WordCloud wordCloud;
     

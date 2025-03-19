@@ -1,6 +1,11 @@
 /**
  * @file sgd_classifier_test.cpp
  * @brief Unit tests for the SGDClassifier class
+ * @ingroup tests
+ * @defgroup classifier_tests Classifier Tests
+ * 
+ * Contains tests for the Stochastic Gradient Descent classifier,
+ * which is used for sentiment analysis classification.
  */
 
 #include "blahajpi/models/sgd.hpp"
@@ -14,8 +19,20 @@
 
 namespace {
 
+/**
+ * @brief Test fixture for SGDClassifier tests
+ * @ingroup classifier_tests
+ * 
+ * Provides test data and helper functions for testing the classifier.
+ */
 class SGDClassifierTest : public ::testing::Test {
 protected:
+    /**
+     * @brief Set up test data and directories
+     * 
+     * Creates linearly separable data for testing classification
+     * and a temporary directory for file operations.
+     */
     void SetUp() override {
         // Create temporary directory for file operations
         tempDir = std::filesystem::temp_directory_path() / "blahajpi_tests";
@@ -31,12 +48,22 @@ protected:
         };
     }
     
+    /**
+     * @brief Clean up temporary files
+     * 
+     * Removes the temporary directory created during testing.
+     */
     void TearDown() override {
         if (std::filesystem::exists(tempDir)) {
             std::filesystem::remove_all(tempDir);
         }
     }
     
+    /**
+     * @brief Creates linearly separable test data
+     * 
+     * Generates random points in 2D space with a linear decision boundary.
+     */
     void createLinearData() {
         // Clear existing data
         linearFeatures.clear();
@@ -58,6 +85,15 @@ protected:
         }
     }
     
+    /**
+     * @brief Calculates classification accuracy
+     * 
+     * Computes the proportion of correctly classified examples.
+     * 
+     * @param predictions Predicted labels
+     * @param groundTruth True labels
+     * @return Accuracy as a value between 0 and 1
+     */
     double calculateAccuracy(const std::vector<int>& predictions, const std::vector<int>& groundTruth) {
         if (predictions.size() != groundTruth.size() || predictions.empty()) {
             return 0.0;
@@ -73,24 +109,51 @@ protected:
         return static_cast<double>(correct) / predictions.size();
     }
     
+    /** Features for linear classification problem */
     std::vector<std::vector<double>> linearFeatures;
+    
+    /** Labels for linear classification problem */
     std::vector<int> linearLabels;
+    
+    /** Test instances for prediction */
     std::vector<std::vector<double>> testInstances;
+    
+    /** Temporary directory path for file operations */
     std::filesystem::path tempDir;
 };
 
-// Simplified tests focusing on core functionality
+/**
+ * @test
+ * @brief Tests default constructor
+ * @ingroup classifier_tests
+ * 
+ * Verifies that the SGDClassifier can be constructed with default parameters.
+ */
 TEST_F(SGDClassifierTest, DefaultConstructor) {
     blahajpi::models::SGDClassifier classifier;
     SUCCEED();  // Just check if it can be constructed without crashing
 }
 
+/**
+ * @test
+ * @brief Tests parameterized constructor
+ * @ingroup classifier_tests
+ * 
+ * Verifies that the SGDClassifier can be constructed with custom parameters.
+ */
 TEST_F(SGDClassifierTest, ParameterizedConstructor) {
     EXPECT_NO_THROW({
         blahajpi::models::SGDClassifier classifier("log", 0.001, 20, 0.05);
     });
 }
 
+/**
+ * @test
+ * @brief Tests training on linear data
+ * @ingroup classifier_tests
+ * 
+ * Verifies that the SGDClassifier can learn a linear decision boundary.
+ */
 TEST_F(SGDClassifierTest, TrainOnLinearData) {
     // Use a simplified test with fewer iterations
     blahajpi::models::SGDClassifier classifier("log", 0.0001, 20, 0.01);
@@ -110,6 +173,13 @@ TEST_F(SGDClassifierTest, TrainOnLinearData) {
     EXPECT_GT(accuracy, 0.5);  // Better than random chance
 }
 
+/**
+ * @test
+ * @brief Tests model persistence
+ * @ingroup classifier_tests
+ * 
+ * Verifies that the SGDClassifier can be saved to and loaded from disk.
+ */
 TEST_F(SGDClassifierTest, SaveAndLoad) {
     // Create and train a classifier
     blahajpi::models::SGDClassifier classifier("log", 0.0001, 20, 0.01);

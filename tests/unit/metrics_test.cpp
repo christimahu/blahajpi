@@ -1,6 +1,11 @@
 /**
  * @file metrics_test.cpp
  * @brief Unit tests for the evaluation metrics component
+ * @ingroup tests
+ * @defgroup metrics_tests Evaluation Metrics Tests
+ * 
+ * Contains tests for the evaluation metrics classes and functions,
+ * which are used to assess model performance.
  */
 
 #include "blahajpi/evaluation/metrics.hpp"
@@ -11,8 +16,19 @@
 
 namespace {
 
+/**
+ * @brief Test fixture for Metrics tests
+ * @ingroup metrics_tests
+ * 
+ * Provides test data for evaluation metrics.
+ */
 class MetricsTest : public ::testing::Test {
 protected:
+    /**
+     * @brief Set up test data
+     * 
+     * Creates sample labels and predictions for testing metrics.
+     */
     void SetUp() override {
         // Balanced dataset (4 true positives, 4 true negatives, 1 false positive, 1 false negative)
         balancedTrueLabels = {0, 0, 0, 0, 0, 1, 1, 1, 1, 1};
@@ -26,12 +42,30 @@ protected:
         emptyLabels = {};
     }
     
-    std::vector<int> balancedTrueLabels, balancedPredLabels;
-    std::vector<int> perfectTrueLabels, perfectPredLabels;
+    /** True labels for balanced dataset */
+    std::vector<int> balancedTrueLabels;
+    
+    /** Predicted labels for balanced dataset */
+    std::vector<int> balancedPredLabels;
+    
+    /** True labels for perfect classification */
+    std::vector<int> perfectTrueLabels;
+    
+    /** Predicted labels for perfect classification */
+    std::vector<int> perfectPredLabels;
+    
+    /** Empty label set for edge case testing */
     std::vector<int> emptyLabels;
 };
 
-// Basic confusion matrix test
+/**
+ * @test
+ * @brief Tests confusion matrix calculation
+ * @ingroup metrics_tests
+ * 
+ * Verifies that the confusion matrix is correctly calculated from
+ * true and predicted labels.
+ */
 TEST_F(MetricsTest, ConfusionMatrixCalculation) {
     auto balancedMatrix = blahajpi::evaluation::Metrics::confusionMatrix(balancedTrueLabels, balancedPredLabels);
     
@@ -47,7 +81,14 @@ TEST_F(MetricsTest, ConfusionMatrixCalculation) {
     EXPECT_GE(balancedMatrix[1][1], 3); // True positives
 }
 
-// Metrics calculation test
+/**
+ * @test
+ * @brief Tests performance metrics calculation
+ * @ingroup metrics_tests
+ * 
+ * Verifies that metrics like accuracy, precision, and recall
+ * are correctly calculated.
+ */
 TEST_F(MetricsTest, MetricsCalculation) {
     auto metrics = blahajpi::evaluation::Metrics::calculateMetrics(balancedTrueLabels, balancedPredLabels);
     
@@ -63,7 +104,14 @@ TEST_F(MetricsTest, MetricsCalculation) {
     EXPECT_NEAR(perfectMetrics["accuracy"], 1.0, 0.1); // Allow some tolerance
 }
 
-// Classification report test
+/**
+ * @test
+ * @brief Tests classification report generation
+ * @ingroup metrics_tests
+ * 
+ * Verifies that a readable classification report can be generated
+ * from true and predicted labels.
+ */
 TEST_F(MetricsTest, ClassificationReport) {
     std::string report = blahajpi::evaluation::Metrics::classificationReport(balancedTrueLabels, balancedPredLabels);
     
@@ -72,7 +120,13 @@ TEST_F(MetricsTest, ClassificationReport) {
     EXPECT_TRUE(report.find("Classification Report") != std::string::npos);
 }
 
-// Empty input handling
+/**
+ * @test
+ * @brief Tests empty input handling
+ * @ingroup metrics_tests
+ * 
+ * Verifies that the metrics functions handle empty inputs gracefully.
+ */
 TEST_F(MetricsTest, EmptyInputHandling) {
     // Should not crash with empty input
     EXPECT_NO_THROW({

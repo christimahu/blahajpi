@@ -1,6 +1,11 @@
 /**
  * @file dataset_test.cpp
  * @brief Simplified but meaningful unit tests for the Dataset class
+ * @ingroup tests
+ * @defgroup dataset_tests Dataset Tests
+ * 
+ * Contains tests for the Dataset class, which handles loading, processing,
+ * and managing data for training and evaluation.
  */
 
 #include "blahajpi/utils/dataset.hpp"
@@ -11,8 +16,19 @@
 
 namespace {
 
+/**
+ * @brief Test fixture for Dataset tests
+ * @ingroup dataset_tests
+ * 
+ * Provides common setup and sample data for testing the Dataset class.
+ */
 class DatasetTest : public ::testing::Test {
 protected:
+    /**
+     * @brief Set up test data
+     * 
+     * Creates sample data for testing Dataset functionality.
+     */
     void SetUp() override {
         // Create sample data
         sampleData = {
@@ -22,10 +38,17 @@ protected:
         };
     }
     
+    /** Sample data for testing */
     std::vector<std::pair<int, std::string>> sampleData;
 };
 
-// Test basic construction
+/**
+ * @test
+ * @brief Tests basic construction of the Dataset class
+ * @ingroup dataset_tests
+ * 
+ * Verifies that the Dataset can be constructed with and without initial data.
+ */
 TEST_F(DatasetTest, Construction) {
     // Default constructor
     EXPECT_NO_THROW({
@@ -38,7 +61,13 @@ TEST_F(DatasetTest, Construction) {
     });
 }
 
-// Test size calculation
+/**
+ * @test
+ * @brief Tests size calculation
+ * @ingroup dataset_tests
+ * 
+ * Verifies that the Dataset correctly reports its size.
+ */
 TEST_F(DatasetTest, Size) {
     // Empty dataset
     blahajpi::utils::Dataset emptyDataset;
@@ -49,7 +78,13 @@ TEST_F(DatasetTest, Size) {
     EXPECT_EQ(dataset.size(), sampleData.size());
 }
 
-// Test train-test split
+/**
+ * @test
+ * @brief Tests train-test split functionality
+ * @ingroup dataset_tests
+ * 
+ * Verifies that the Dataset can be split into training and test sets.
+ */
 TEST_F(DatasetTest, TrainTestSplit) {
     blahajpi::utils::Dataset dataset(sampleData);
     
@@ -69,7 +104,13 @@ TEST_F(DatasetTest, TrainTestSplit) {
     EXPECT_EQ(trainData.size() + testData.size(), sampleData.size());
 }
 
-// Test getting texts with a specific label
+/**
+ * @test
+ * @brief Tests retrieval of texts with specific labels
+ * @ingroup dataset_tests
+ * 
+ * Verifies that the Dataset can filter texts by their labels.
+ */
 TEST_F(DatasetTest, GetTextsWithLabel) {
     blahajpi::utils::Dataset dataset(sampleData);
     
@@ -86,7 +127,13 @@ TEST_F(DatasetTest, GetTextsWithLabel) {
     EXPECT_TRUE(nonExistentTexts.empty());
 }
 
-// Test getting label distribution
+/**
+ * @test
+ * @brief Tests label distribution calculation
+ * @ingroup dataset_tests
+ * 
+ * Verifies that the Dataset correctly calculates the distribution of labels.
+ */
 TEST_F(DatasetTest, GetLabelDistribution) {
     blahajpi::utils::Dataset dataset(sampleData);
     
@@ -102,7 +149,13 @@ TEST_F(DatasetTest, GetLabelDistribution) {
     EXPECT_EQ(distribution[4], 1); // 1 harmful text
 }
 
-// Test getting statistics
+/**
+ * @test
+ * @brief Tests statistics generation
+ * @ingroup dataset_tests
+ * 
+ * Verifies that the Dataset can generate statistical information about its contents.
+ */
 TEST_F(DatasetTest, GetStatistics) {
     blahajpi::utils::Dataset dataset(sampleData);
     
@@ -119,7 +172,13 @@ TEST_F(DatasetTest, GetStatistics) {
     EXPECT_EQ(stats["total_samples"], std::to_string(sampleData.size()));
 }
 
-// Test format auto-detection
+/**
+ * @test
+ * @brief Tests format auto-detection functionality
+ * @ingroup dataset_tests
+ * 
+ * Verifies that the Dataset can handle format auto-detection without crashing.
+ */
 TEST_F(DatasetTest, FormatAutoDetection) {
     // This test simply verifies that calling loadFromFile with AUTO format 
     // doesn't crash, without actually loading a file

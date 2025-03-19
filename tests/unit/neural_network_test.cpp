@@ -1,6 +1,11 @@
 /**
  * @file neural_network_test.cpp
  * @brief Unit tests for the NeuralNetworkClassifier class
+ * @ingroup tests
+ * @defgroup neural_network_tests Neural Network Tests
+ * 
+ * Contains tests for the neural network classifier implementation used
+ * for sentiment analysis classification.
  */
 
 #include "blahajpi/models/neural_network.hpp"
@@ -13,8 +18,20 @@
 
 namespace {
 
+/**
+ * @brief Test fixture for NeuralNetworkClassifier tests
+ * @ingroup neural_network_tests
+ * 
+ * Provides test data and setup for testing the neural network classifier.
+ */
 class NeuralNetworkTest : public ::testing::Test {
 protected:
+    /**
+     * @brief Set up test data and directories
+     * 
+     * Creates a simple dataset for testing and a temporary directory
+     * for file operations.
+     */
     void SetUp() override {
         // Create temporary directory for file operations
         tempDir = std::filesystem::temp_directory_path() / "blahajpi_tests";
@@ -30,12 +47,22 @@ protected:
         };
     }
     
+    /**
+     * @brief Clean up temporary files
+     * 
+     * Removes the temporary directory created during testing.
+     */
     void TearDown() override {
         if (std::filesystem::exists(tempDir)) {
             std::filesystem::remove_all(tempDir);
         }
     }
     
+    /**
+     * @brief Creates a simple dataset for testing
+     * 
+     * Generates a very small XOR-like dataset for quick testing.
+     */
     void createLinearData() {
         // Clear existing data
         linearFeatures.clear();
@@ -53,13 +80,27 @@ protected:
         linearLabels = {0, 1, 1, 0};
     }
     
+    /** Features for testing */
     std::vector<std::vector<double>> linearFeatures;
+    
+    /** Labels for testing */
     std::vector<int> linearLabels;
+    
+    /** Test instances for prediction */
     std::vector<std::vector<double>> testInstances;
+    
+    /** Temporary directory path for file operations */
     std::filesystem::path tempDir;
 };
 
-// Test basic construction
+/**
+ * @test
+ * @brief Tests basic construction
+ * @ingroup neural_network_tests
+ * 
+ * Verifies that the neural network classifier can be constructed
+ * with explicit parameters.
+ */
 TEST_F(NeuralNetworkTest, Construction) {
     // Try to construct with explicit parameters
     EXPECT_NO_THROW({
@@ -67,7 +108,13 @@ TEST_F(NeuralNetworkTest, Construction) {
     });
 }
 
-// Test basic fitting
+/**
+ * @test
+ * @brief Tests basic model fitting
+ * @ingroup neural_network_tests
+ * 
+ * Verifies that the neural network can be trained on a small dataset.
+ */
 TEST_F(NeuralNetworkTest, BasicFit) {
     // Create a classifier with minimal epochs for quick testing
     blahajpi::models::NeuralNetworkClassifier classifier(1, 4, 5, 0.1);
@@ -76,7 +123,13 @@ TEST_F(NeuralNetworkTest, BasicFit) {
     EXPECT_NO_THROW(classifier.fit(linearFeatures, linearLabels));
 }
 
-// Test basic prediction
+/**
+ * @test
+ * @brief Tests basic prediction
+ * @ingroup neural_network_tests
+ * 
+ * Verifies that the neural network can make predictions on new instances.
+ */
 TEST_F(NeuralNetworkTest, BasicPredict) {
     // Create a classifier with minimal configuration
     blahajpi::models::NeuralNetworkClassifier classifier(1, 4, 5, 0.1);
@@ -92,7 +145,14 @@ TEST_F(NeuralNetworkTest, BasicPredict) {
     EXPECT_EQ(predictions.size(), testInstances.size());
 }
 
-// Test probability prediction
+/**
+ * @test
+ * @brief Tests probability prediction
+ * @ingroup neural_network_tests
+ * 
+ * Verifies that the neural network can output probabilities
+ * for its predictions.
+ */
 TEST_F(NeuralNetworkTest, PredictProbabilities) {
     // Create a classifier with minimal configuration
     blahajpi::models::NeuralNetworkClassifier classifier(1, 4, 5, 0.1);
@@ -114,7 +174,13 @@ TEST_F(NeuralNetworkTest, PredictProbabilities) {
     }
 }
 
-// Test model scoring
+/**
+ * @test
+ * @brief Tests model scoring
+ * @ingroup neural_network_tests
+ * 
+ * Verifies that the neural network can score its performance on a dataset.
+ */
 TEST_F(NeuralNetworkTest, Scoring) {
     // Create a classifier with minimal configuration
     blahajpi::models::NeuralNetworkClassifier classifier(1, 4, 5, 0.1);
@@ -131,7 +197,13 @@ TEST_F(NeuralNetworkTest, Scoring) {
     EXPECT_LE(score, 1.0);
 }
 
-// Test model persistence - skip if not implemented
+/**
+ * @test
+ * @brief Tests model persistence
+ * @ingroup neural_network_tests
+ * 
+ * Verifies that the neural network can be saved to and loaded from disk.
+ */
 TEST_F(NeuralNetworkTest, SaveAndLoad) {
     // Create and train a classifier
     blahajpi::models::NeuralNetworkClassifier classifier(1, 4, 5, 0.1);

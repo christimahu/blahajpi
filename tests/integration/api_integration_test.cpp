@@ -1,6 +1,11 @@
 /**
  * @file api_integration_test.cpp
  * @brief Integration tests for the BlahajPI API
+ * @ingroup tests
+ * @defgroup integration_tests Integration Tests
+ * 
+ * Contains integration tests that verify different components of the
+ * BlahajPI system work together correctly.
  */
 
 #include "blahajpi/analyzer.hpp"
@@ -14,8 +19,19 @@
 
 namespace {
 
+/**
+ * @brief Test fixture for API integration tests
+ * @ingroup integration_tests
+ * 
+ * Provides test environment for testing the BlahajPI API components together.
+ */
 class APIIntegrationTest : public ::testing::Test {
 protected:
+    /**
+     * @brief Set up test environment
+     * 
+     * Creates temporary directories and test files for integration testing.
+     */
     void SetUp() override {
         // Create temporary directory
         tempDir = std::filesystem::temp_directory_path() / "blahajpi_tests";
@@ -56,22 +72,46 @@ protected:
         configFile.close();
     }
     
+    /**
+     * @brief Clean up test environment
+     * 
+     * Removes temporary files and directories used in tests.
+     */
     void TearDown() override {
         if (std::filesystem::exists(tempDir)) {
             std::filesystem::remove_all(tempDir);
         }
     }
     
+    /** Path to temporary directory */
     std::filesystem::path tempDir;
+    
+    /** Path to model directory */
     std::filesystem::path modelDir;
+    
+    /** Path to configuration directory */
     std::filesystem::path configDir;
+    
+    /** Path to data directory */
     std::filesystem::path dataDir;
+    
+    /** Path to results directory */
     std::filesystem::path resultsDir;
+    
+    /** Path to test data file */
     std::filesystem::path dataPath;
+    
+    /** Path to test configuration file */
     std::filesystem::path configPath;
 };
 
-// Test basic analyzer initialization
+/**
+ * @test
+ * @brief Tests basic analyzer initialization
+ * @ingroup integration_tests
+ * 
+ * Verifies that the Analyzer can be initialized with a configuration file.
+ */
 TEST_F(APIIntegrationTest, AnalyzerInitialization) {
     // Create analyzer with configuration
     blahajpi::Analyzer analyzer;
@@ -84,7 +124,13 @@ TEST_F(APIIntegrationTest, AnalyzerInitialization) {
     EXPECT_FALSE(config.empty());
 }
 
-// Test basic model training
+/**
+ * @test
+ * @brief Tests basic model training
+ * @ingroup integration_tests
+ * 
+ * Verifies that a model can be trained using the Analyzer API.
+ */
 TEST_F(APIIntegrationTest, BasicTraining) {
     // Create analyzer
     blahajpi::Analyzer analyzer;
@@ -106,7 +152,13 @@ TEST_F(APIIntegrationTest, BasicTraining) {
     }
 }
 
-// Test basic text analysis - only if we have a model
+/**
+ * @test
+ * @brief Tests basic text analysis
+ * @ingroup integration_tests
+ * 
+ * Verifies that text can be analyzed using a trained model.
+ */
 TEST_F(APIIntegrationTest, BasicAnalysis) {
     // Create analyzer
     blahajpi::Analyzer analyzer;
@@ -133,7 +185,13 @@ TEST_F(APIIntegrationTest, BasicAnalysis) {
     EXPECT_FALSE(result.sentiment.empty());
 }
 
-// Test visualization generation - simplified
+/**
+ * @test
+ * @brief Tests visualization generation
+ * @ingroup integration_tests
+ * 
+ * Verifies that visualizations can be generated from analysis results.
+ */
 TEST_F(APIIntegrationTest, BasicVisualization) {
     // Create some analysis results for visualization
     std::vector<blahajpi::AnalysisResult> results;
@@ -170,7 +228,13 @@ TEST_F(APIIntegrationTest, BasicVisualization) {
     }
 }
 
-// Test configuration manipulation
+/**
+ * @test
+ * @brief Tests configuration manipulation
+ * @ingroup integration_tests
+ * 
+ * Verifies that configuration settings can be modified and retrieved.
+ */
 TEST_F(APIIntegrationTest, ConfigurationManipulation) {
     // Create analyzer
     blahajpi::Analyzer analyzer;
