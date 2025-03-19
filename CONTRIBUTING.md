@@ -4,7 +4,7 @@ Thank you for considering contributing to Blahaj PI! This document outlines the 
 
 ## Code of Conduct
 
-This project adheres to the [Contributor Covenant](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to Christi Mahu via [https://ChristiMahu.com](https://ChristiMahu.com).
+This project adheres to the [Contributor Covenant](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior via [https://blahajpi.com/contact](https://blahajpi.com/contact).
 
 ## How Can I Contribute?
 
@@ -49,7 +49,7 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
 2. Update documentation as necessary.
 3. Add tests that verify your changes.
 4. Make sure all tests pass.
-5. Ensure your changes meet the required test coverage threshold.
+5. Ensure your changes meet the required test coverage threshold (80%).
 6. The PR should clearly describe the problem and solution.
 7. The PR will be reviewed by at least one maintainer.
 
@@ -105,11 +105,32 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
 
 #### Test Requirements
 
-- All new code must be covered by tests.
-- Pull requests must maintain or improve the current test coverage ratio.
-- The current minimum test coverage requirement must be met (specific threshold to be determined).
-- Tests should cover both normal operation and error conditions.
+- All new code must have comprehensive tests using Google Test.
+- Tests should follow the Given-When-Then pattern for clarity.
+- Pull requests must maintain or improve the current test coverage ratio (minimum 80%).
+- Tests should cover:
+  - Basic functionality (normal operation)
+  - Edge cases (boundary conditions)
+  - Error handling (invalid inputs, error conditions)
+  - Security considerations (where applicable)
 - Integration tests should be included for features that span multiple components.
+
+Example test structure:
+
+```cpp
+TEST_F(ComponentTest, FunctionHandlesNormalInput) {
+    // Given: A properly configured component and valid input
+    Component component;
+    std::string validInput = "test input";
+    
+    // When: The function is called with valid input
+    auto result = component.process(validInput);
+    
+    // Then: The result should meet expectations
+    EXPECT_EQ(result.status, Status::Success);
+    EXPECT_FALSE(result.output.empty());
+}
+```
 
 ## Development Setup
 
@@ -118,6 +139,7 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
 - C++23 compatible compiler
 - CMake 3.14 or higher
 - Python 3.6+ (for build scripts)
+- Google Test (for running tests)
 
 ### Building for Development
 
@@ -129,7 +151,7 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
 
 2. Build using the Python script:
    ```bash
-   python tools/scripts/dev.py --build
+   python dev.py --build
    ```
 
    Or manually:
@@ -142,23 +164,38 @@ Enhancement suggestions are also tracked as [GitHub issues](https://github.com/c
 
 3. Run the tests:
    ```bash
-   python tools/scripts/dev.py --test
+   python dev.py --test
    ```
 
-4. Run the linter (clang-format):
+4. Run with Address Sanitizer:
    ```bash
-   python tools/scripts/dev.py --format
+   python dev.py --run-asan
    ```
 
-## Writing Tests
+5. Run the linter (clang-format):
+   ```bash
+   python dev.py --format
+   ```
 
-All new features or bug fixes should include tests:
+## Testing Approach
 
-1. Tests are located in the `tests/` directory.
-2. Create a new test file for new components or add tests to existing files for modifications.
-3. Each test should verify a specific aspect of functionality.
-4. Tests should be small, targeted, and fast.
-5. Include both positive tests (expected behavior) and negative tests (error handling).
+We use several testing tools to ensure Blahaj PI is reliable, accurate, and secure:
+
+1. **Google Test & Google Mock**: For unit and integration testing. All tests follow the Given-When-Then pattern for clarity.
+
+2. **Sanitizers**:
+   - AddressSanitizer (ASan): Detects memory errors like buffer overflows and use-after-free
+   - UndefinedBehaviorSanitizer (UBSan): Catches issues like integer overflow
+
+3. **Static Analysis**:
+   - Clang-Tidy: Code linting to catch common errors and enforce style guidelines
+   - CppCheck: Additional static analysis to find bugs not caught by the compiler
+
+4. **Fuzzing Tests**:
+   - For critical components like text processing and vectorization
+   - Helps identify edge cases and unexpected inputs
+
+For more details on running different test types, see [TESTING.md](TESTING.md).
 
 ## Documentation
 
@@ -168,6 +205,7 @@ Documentation is a crucial part of the project:
 2. Add examples for new features.
 3. Document any behavior changes.
 4. Update the README.md if necessary.
+5. Ensure test documentation follows our standard format.
 
 ## Community Priorities
 
@@ -201,6 +239,7 @@ We use GitHub labels to categorize issues and pull requests:
 - `refactoring`: Code refactoring that doesn't add features or fix bugs
 - `accessibility`: Improvements to make the tool more accessible
 - `platform-support`: Adding support for additional platforms
+- `test`: Related to testing improvements
 
 ## Questions?
 

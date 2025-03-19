@@ -4,7 +4,23 @@ cmake_minimum_required(VERSION 3.14)
 # Enable testing functionality
 enable_testing()
 
-# Define test categories with labels
+# Find Google Test if not already added
+if (NOT TARGET gtest)
+    find_package(GTest QUIET)
+    if (NOT GTest_FOUND)
+        message(STATUS "Using FetchContent to get GoogleTest")
+        include(FetchContent)
+        FetchContent_Declare(
+            googletest
+            GIT_REPOSITORY https://github.com/google/googletest.git
+            GIT_TAG v1.13.0
+        )
+        # For Windows: Prevent overriding the parent project's compiler/linker settings
+        set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+        FetchContent_MakeAvailable(googletest)
+    endif()
+endif()
+
 set(UNIT_TESTS
     analyzer_test
     text_processor_test
@@ -12,6 +28,9 @@ set(UNIT_TESTS
     sgd_classifier_test
     neural_network_test
     metrics_test
+    config_test
+	dataset_test 
+	word_cloud_test
 )
 
 set(INTEGRATION_TESTS
@@ -19,13 +38,21 @@ set(INTEGRATION_TESTS
     cli_integration_test
 )
 
+# Configure tests library
+add_library(blahajpi_tests INTERFACE)
+target_link_libraries(blahajpi_tests INTERFACE
+    blahajpi_lib
+    gtest
+    gtest_main
+)
+
 # Unit tests
 foreach(TEST_NAME ${UNIT_TESTS})
     # Create unit test executable
     add_executable(${TEST_NAME} unit/${TEST_NAME}.cpp)
     
-    # Link against the library
-    target_link_libraries(${TEST_NAME} PRIVATE blahajpi_lib)
+    # Link against the tests library
+    target_link_libraries(${TEST_NAME} PRIVATE blahajpi_tests)
     
     # Add the test with label
     add_test(
@@ -43,8 +70,8 @@ foreach(TEST_NAME ${INTEGRATION_TESTS})
     # Create integration test executable
     add_executable(${TEST_NAME} integration/${TEST_NAME}.cpp)
     
-    # Link against the library
-    target_link_libraries(${TEST_NAME} PRIVATE blahajpi_lib)
+    # Link against the tests library
+    target_link_libraries(${TEST_NAME} PRIVATE blahajpi_tests)
     
     # Add the test with label
     add_test(

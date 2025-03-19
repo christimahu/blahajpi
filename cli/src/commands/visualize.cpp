@@ -6,7 +6,7 @@
  * or directly from text data, showing frequency patterns in the content.
  * 
  * @author Christi Mahu
- * @date 2024
+ * @date 2025
  */
 
 #include "bpicli/commands.hpp"

@@ -6,7 +6,7 @@
  * to identify potentially harmful content targeting transgender individuals.
  * 
  * @author Christi Mahu
- * @date 2024
+ * @date 2025
  */
 
 #pragma once
