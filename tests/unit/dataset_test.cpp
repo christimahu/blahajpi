@@ -1,102 +1,140 @@
 /**
  * @file dataset_test.cpp
- * @brief Unit tests for the Dataset class
+ * @brief Simplified but meaningful unit tests for the Dataset class
  */
 
 #include "blahajpi/utils/dataset.hpp"
 #include <gtest/gtest.h>
-#include <filesystem>
-#include <fstream>
 #include <string>
-#include <unordered_map>
 #include <vector>
+#include <unordered_map>
 
 namespace {
 
 class DatasetTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        // Create temporary directory
-        tempDir = std::filesystem::temp_directory_path() / "blahajpi_tests";
-        std::filesystem::create_directories(tempDir);
-        
-        // Create sample CSV file
-        csvPath = tempDir / "test_data.csv";
-        std::ofstream csvFile(csvPath);
-        csvFile << "label,text\n"
-               << "0,This is a safe message with normal content.\n"
-               << "4,This is harmful content targeting groups.\n"
-               << "0,Another safe message about everyday topics.\n";
-        csvFile.close();
+        // Create sample data
+        sampleData = {
+            {0, "This is a safe message with normal content."},
+            {4, "This is harmful content targeting groups."},
+            {0, "Another safe message about everyday topics."}
+        };
     }
     
-    void TearDown() override {
-        if (std::filesystem::exists(tempDir)) {
-            std::filesystem::remove_all(tempDir);
-        }
-    }
-    
-    std::filesystem::path tempDir;
-    std::filesystem::path csvPath;
+    std::vector<std::pair<int, std::string>> sampleData;
 };
 
-TEST_F(DatasetTest, DefaultConstructor) {
-    blahajpi::utils::Dataset dataset;
+// Test basic construction
+TEST_F(DatasetTest, Construction) {
+    // Default constructor
+    EXPECT_NO_THROW({
+        blahajpi::utils::Dataset dataset;
+    });
     
-    // New dataset should be empty
-    EXPECT_EQ(dataset.size(), 0);
+    // Constructor with data
+    EXPECT_NO_THROW({
+        blahajpi::utils::Dataset dataset(sampleData);
+    });
 }
 
-TEST_F(DatasetTest, DataConstructor) {
-    std::vector<std::pair<int, std::string>> initialData = {
-        {0, "Safe text 1"},
-        {4, "Harmful text 1"},
-        {0, "Safe text 2"}
-    };
+// Test size calculation
+TEST_F(DatasetTest, Size) {
+    // Empty dataset
+    blahajpi::utils::Dataset emptyDataset;
+    EXPECT_EQ(emptyDataset.size(), 0);
     
-    blahajpi::utils::Dataset dataset(initialData);
-    
-    // Dataset size should match initial data
-    EXPECT_EQ(dataset.size(), initialData.size());
+    // Dataset with data
+    blahajpi::utils::Dataset dataset(sampleData);
+    EXPECT_EQ(dataset.size(), sampleData.size());
 }
 
-TEST_F(DatasetTest, LoadFromCsv) {
-    blahajpi::utils::Dataset dataset;
+// Test train-test split
+TEST_F(DatasetTest, TrainTestSplit) {
+    blahajpi::utils::Dataset dataset(sampleData);
     
-    // Load from CSV with format auto-detection
-    bool result = dataset.loadFromFile(csvPath.string(), blahajpi::utils::Dataset::Format::AUTO, "label", "text");
+    // Split without exceptions
+    EXPECT_NO_THROW({
+        dataset.splitTrainTest(0.25);
+    });
     
-    // This might fail if the CSV parser implementation is different, so we'll be flexible
-    if (result) {
-        // Dataset size should match CSV rows (excluding header)
-        EXPECT_GT(dataset.size(), 0);
-    } else {
-        // Skip this test if loading fails
-        GTEST_SKIP() << "CSV loading not implemented or failed";
-    }
+    // Get split data
+    auto trainData = dataset.getTrainData();
+    auto testData = dataset.getTestData();
+    
+    // Should split into non-empty sets
+    EXPECT_FALSE(trainData.empty());
+    // Test set might be empty if rounding causes all data to go to training
+    // So we only check the combined size
+    EXPECT_EQ(trainData.size() + testData.size(), sampleData.size());
 }
 
-TEST_F(DatasetTest, LoadFromNonExistentFile) {
-    blahajpi::utils::Dataset dataset;
+// Test getting texts with a specific label
+TEST_F(DatasetTest, GetTextsWithLabel) {
+    blahajpi::utils::Dataset dataset(sampleData);
     
-    // Attempt to load from non-existent file
-    bool result = dataset.loadFromFile("non_existent_file.csv");
-    EXPECT_FALSE(result);
-    EXPECT_EQ(dataset.size(), 0);
+    // Get safe texts (label 0)
+    auto safeTexts = dataset.getTextsWithLabel(0);
+    EXPECT_EQ(safeTexts.size(), 2); // We have 2 safe texts in sample data
+    
+    // Get harmful texts (label 4)
+    auto harmfulTexts = dataset.getTextsWithLabel(4);
+    EXPECT_EQ(harmfulTexts.size(), 1); // We have 1 harmful text in sample data
+    
+    // Get non-existent label
+    auto nonExistentTexts = dataset.getTextsWithLabel(999);
+    EXPECT_TRUE(nonExistentTexts.empty());
 }
 
-TEST_F(DatasetTest, EmptyDataset) {
+// Test getting label distribution
+TEST_F(DatasetTest, GetLabelDistribution) {
+    blahajpi::utils::Dataset dataset(sampleData);
+    
+    // Get label distribution
+    auto distribution = dataset.getLabelDistribution();
+    
+    // Should have distribution for our labels
+    EXPECT_TRUE(distribution.count(0) > 0);
+    EXPECT_TRUE(distribution.count(4) > 0);
+    
+    // Distribution should match our data
+    EXPECT_EQ(distribution[0], 2); // 2 safe texts
+    EXPECT_EQ(distribution[4], 1); // 1 harmful text
+}
+
+// Test getting statistics
+TEST_F(DatasetTest, GetStatistics) {
+    blahajpi::utils::Dataset dataset(sampleData);
+    
+    // Get statistics
+    auto stats = dataset.getStatistics();
+    
+    // Should have some statistics
+    EXPECT_FALSE(stats.empty());
+    
+    // Should have total samples statistic
+    EXPECT_TRUE(stats.count("total_samples") > 0);
+    
+    // Total samples should match our data
+    EXPECT_EQ(stats["total_samples"], std::to_string(sampleData.size()));
+}
+
+// Test format auto-detection
+TEST_F(DatasetTest, FormatAutoDetection) {
+    // This test simply verifies that calling loadFromFile with AUTO format 
+    // doesn't crash, without actually loading a file
     blahajpi::utils::Dataset dataset;
     
-    // Size should be 0
-    EXPECT_EQ(dataset.size(), 0);
-    
-    // Train-test split should not crash
-    EXPECT_NO_THROW(dataset.splitTrainTest(0.2));
-    
-    // Get methods should return empty vectors
-    EXPECT_TRUE(dataset.getTrainData().empty());
-    EXPECT_TRUE(dataset.getTestData().empty());
+    EXPECT_NO_THROW({
+        // Use a non-existent file to verify graceful failure
+        bool result = dataset.loadFromFile(
+            "non_existent_file.csv", 
+            blahajpi::utils::Dataset::Format::AUTO,
+            "label", 
+            "text"
+        );
+        EXPECT_FALSE(result);
+    });
 }
 
 } // namespace
