@@ -1,0 +1,175 @@
+/* Trans flag color scheme */
+:root {
+    --trans-blue: #55CDFC;
+    --trans-pink: #F7A8B8;
+    --trans-white: #FFFFFF;
+    --text-color: #333;
+    --link-color: #0056b3;
+    --header-color: #2a2a2a;
+    --code-bg: #f8f9fa;
+}
+
+/* Page background with trans flag */
+body {
+    background: linear-gradient(to right, 
+        var(--trans-blue) 0%, 
+        var(--trans-blue) 15%, 
+        var(--trans-pink) 15%, 
+        var(--trans-pink) 30%, 
+        var(--trans-white) 30%, 
+        var(--trans-white) 70%, 
+        var(--trans-pink) 70%, 
+        var(--trans-pink) 85%, 
+        var(--trans-blue) 85%, 
+        var(--trans-blue) 100%
+    );
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* Main content area */
+div.contents, #titlearea, div.header, .memtitle, .memdoc {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+/* Make content stand out from background */
+div#doc-content {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 10px;
+}
+
+/* Header styling */
+#titlearea {
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+}
+
+#projectlogo img {
+    max-height: 80px;
+    border-radius: 8px;
+}
+
+#projectname {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 2.5rem;
+    color: var(--header-color);
+}
+
+#projectbrief {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+/* Navigation tabs styling */
+.tabs, .tabs2, .tabs3 {
+    background-image: none;
+    background-color: var(--trans-blue);
+    color: white;
+}
+
+.tablist li {
+    background-image: none !important;
+}
+
+.tablist a {
+    background-image: none !important;
+    color: #333 !important;
+    text-shadow: none !important;
+    font-weight: bold;
+}
+
+.tablist a:hover {
+    background-color: var(--trans-pink) !important;
+    color: #fff !important;
+}
+
+.tablist li.current a {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    color: var(--text-color) !important;
+}
+
+/* Sidebar styling */
+#nav-tree {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+}
+
+#nav-tree .selected {
+    background-image: none;
+    background-color: var(--trans-blue);
+    text-shadow: none;
+    color: white;
+}
+
+/* Footer styling */
+.footer {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+/* Search box styling */
+#MSearchBox {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Links styling */
+a {
+    color: var(--link-color);
+}
+
+a:hover {
+    color: var(--trans-pink);
+    text-decoration: underline;
+}
+
+/* Introduction section */
+.intro-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.intro-section h1 {
+    color: var(--header-color);
+    font-family: 'Quicksand', sans-serif;
+    margin-top: 0;
+}
+
+.github-link {
+    display: inline-block;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin-top: 15px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.github-link:hover {
+    background-color: #555;
+    color: white;
+}
+
+.github-icon {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Google Fonts integration for Quicksand font */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');

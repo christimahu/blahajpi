@@ -1,5 +1,8 @@
 """
 docs.py - Documentation generation for Blahaj PI development tool
+
+This module provides functionality to generate documentation for the 
+Blahaj PI project using Doxygen, with proper output to the web/docs directory.
 """
 
 import os
@@ -7,138 +10,118 @@ import sys
 import subprocess
 import shutil
 from pathlib import Path
+import webbrowser
 
 def generate_docs(args):
-    """Generate project documentation"""
+    """
+    Generate project documentation using Doxygen.
+    
+    This function runs Doxygen to generate HTML documentation for
+    the Blahaj PI project. It ensures documents are created directly
+    in the web/docs directory with the proper structure.
+    
+    Args:
+        args: Command line arguments object with optional 'open_docs' attribute
+        
+    Returns:
+        int: Exit code (0 for success, non-zero for errors)
+    """
     project_root = find_project_root()
     
-    # Define target directory directly
-    web_docs_dir = project_root / "web" / "docs"
+    # Define target directory for documentation
+    docs_dir = project_root / "web" / "docs"
     
-    # Create the target directory
-    os.makedirs(web_docs_dir, exist_ok=True)
-    print(f"Created output directory: {web_docs_dir}")
+    # Create the target directory if it doesn't exist
+    os.makedirs(docs_dir, exist_ok=True)
+    print(f"Documentation output directory: {docs_dir}")
     
-    # Check if Doxygen is installed
+    # Check for Doxygen installation
     doxygen_exe = shutil.which("doxygen")
     if not doxygen_exe:
         print("Error: Doxygen not found. Please install Doxygen.")
+        print("See https://www.doxygen.nl/download.html for installation instructions.")
         return 1
     
-    # Get Doxygen version
-    try:
-        version_result = subprocess.run([doxygen_exe, "--version"], capture_output=True, text=True)
-        print(f"Doxygen version used: {version_result.stdout.strip()}")
-    except Exception as e:
-        print(f"Could not determine Doxygen version: {e}")
+    # Show Doxygen version for diagnostics
+    print(f"Using Doxygen: {get_doxygen_version(doxygen_exe)}")
     
-    # Create a temporary Doxyfile directly using a string
-    temp_doxyfile = project_root / "temp_doxyfile"
-    with open(temp_doxyfile, 'w') as f:
-        f.write(f"""
-# Temporary Doxyfile for Blahaj PI
-PROJECT_NAME           = "Blahaj PI"
-PROJECT_BRIEF          = "Your friendly shark detective"
-OUTPUT_DIRECTORY       = {web_docs_dir}
-CREATE_SUBDIRS         = NO
-ALLOW_UNICODE_NAMES    = YES
-OUTPUT_LANGUAGE        = English
-BRIEF_MEMBER_DESC      = YES
-REPEAT_BRIEF           = YES
-INPUT                  = {project_root}/lib/include {project_root}/lib/src {project_root}/cli/include {project_root}/cli/src
-FILE_PATTERNS          = *.hpp *.cpp *.h *.c
-RECURSIVE              = YES
-EXTRACT_ALL            = YES
-EXTRACT_PRIVATE        = YES
-EXTRACT_STATIC         = YES
-EXTRACT_LOCAL_CLASSES  = YES
-GENERATE_HTML          = YES
-HTML_OUTPUT            = .
-GENERATE_LATEX         = NO
-GENERATE_XML           = NO
-GENERATE_MAN           = NO
-GENERATE_RTF           = NO
-CASE_SENSE_NAMES       = NO
-VERBATIM_HEADERS       = YES
-""")
+    # Run Doxygen with the project Doxyfile
+    doxyfile_path = project_root / "Doxyfile"
+    if not doxyfile_path.exists():
+        print(f"Error: Doxyfile not found at {doxyfile_path}")
+        print("Please create a Doxyfile in the project root directory.")
+        return 1
+        
+    print(f"Running Doxygen with configuration file: {doxyfile_path}")
+    result = subprocess.run([doxygen_exe, str(doxyfile_path)], 
+                           cwd=project_root,
+                           capture_output=True, 
+                           text=True)
     
-    print("Generated temporary Doxyfile for direct output")
-    
-    # Run Doxygen with the temporary config
-    print("Generating API documentation with Doxygen...")
-    result = subprocess.run([doxygen_exe, str(temp_doxyfile)], cwd=project_root)
-    
-    # Remove the temporary Doxyfile
-    os.remove(temp_doxyfile)
-    print("Removed temporary Doxyfile")
-    
+    # Check Doxygen execution result
     if result.returncode != 0:
-        print("Error: Doxygen failed")
+        print("Error: Doxygen failed to generate documentation")
+        print("Doxygen output:")
+        print(result.stderr)
         return 1
     
-    print(f"Doxygen documentation generated to {web_docs_dir}")
+    # Print any warnings from Doxygen
+    if result.stderr:
+        print("Doxygen warnings:")
+        print(result.stderr)
     
-    # Check for MkDocs installation
-    mkdocs_exe = shutil.which("mkdocs")
-    if mkdocs_exe:
-        print("Generating documentation website with MkDocs...")
+    # Verify documentation was generated
+    index_path = docs_dir / "index.html"
+    if not index_path.exists():
+        print(f"Warning: Documentation index not found at {index_path}")
+        print("Doxygen may have generated files in a different location.")
         
-        # Create basic docs structure if needed
-        docs_dir = project_root / "docs"
-        os.makedirs(docs_dir, exist_ok=True)
-        os.makedirs(docs_dir / "user-guide", exist_ok=True)
-        os.makedirs(docs_dir / "developer-guide", exist_ok=True)
-        
-        # Create basic index.md if it doesn't exist
-        index_file = docs_dir / "index.md"
-        if not index_file.exists():
-            with open(index_file, 'w') as f:
-                f.write("# Blahaj PI\n\n")
-                f.write("Your friendly shark detective keeping social waters safe.\n")
-        
-        # Create mkdocs.yml if it doesn't exist
-        mkdocs_file = docs_dir / "mkdocs.yml"
-        if not mkdocs_file.exists():
-            with open(mkdocs_file, 'w') as f:
-                f.write("site_name: Blahaj PI\n")
-                f.write("theme: readthedocs\n")
-        
-        # Build MkDocs directly to web/docs
-        try:
-            print(f"Building MkDocs to {web_docs_dir}...")
-            subprocess.run(
-                [mkdocs_exe, "build", "-f", str(mkdocs_file), "-d", str(web_docs_dir)], 
-                cwd=project_root,
-                check=True
-            )
-            print("MkDocs build completed successfully.")
-        except Exception as e:
-            print(f"Error building MkDocs: {e}")
+        # Try to find the index file
+        for path in docs_dir.glob("**/index.html"):
+            print(f"Found index at: {path}")
+            index_path = path
+            break
     else:
-        print("MkDocs not found. Only API documentation will be available.")
-        print("To install MkDocs, run: pip install mkdocs mkdocs-material")
-    
-    print("\nDocumentation generation completed.")
-    print(f"Documentation available at: {web_docs_dir}")
+        print(f"Documentation generated successfully to {docs_dir}")
     
     # Open in browser if requested
-    if args.open_docs:
+    if hasattr(args, 'open_docs') and args.open_docs and index_path.exists():
         try:
-            import webbrowser
-            index_path = web_docs_dir / "index.html"
-            
-            if index_path.exists():
-                webbrowser.open(f"file://{index_path}")
-                print("Documentation opened in your web browser.")
-            else:
-                print(f"Documentation index not found at {index_path}")
+            webbrowser.open(f"file://{index_path}")
+            print("Documentation opened in your web browser.")
         except Exception as e:
             print(f"Error opening documentation in browser: {e}")
     
     return 0
 
+def get_doxygen_version(doxygen_exe):
+    """
+    Get the version string of the installed Doxygen.
+    
+    Args:
+        doxygen_exe: Path to the Doxygen executable
+        
+    Returns:
+        str: Version string or error message
+    """
+    try:
+        result = subprocess.run([doxygen_exe, "--version"], 
+                              capture_output=True, 
+                              text=True)
+        return result.stdout.strip()
+    except Exception as e:
+        return f"Unknown version (Error: {e})"
+
 def find_project_root():
-    """Find the project root directory"""
+    """
+    Find the project root directory based on CMakeLists.txt file.
+    
+    Returns:
+        Path: Path to the project root directory
+        
+    Raises:
+        SystemExit: If the project root directory cannot be found
+    """
     current_dir = Path.cwd()
     while current_dir != current_dir.parent:
         if (current_dir / "CMakeLists.txt").exists():

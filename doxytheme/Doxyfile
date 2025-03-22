@@ -1,71 +1,54 @@
 # Doxyfile for Blahaj PI
-# Configuration file for the Doxygen documentation system
-# See www.doxygen.org for more information
+# Configuration for generating documentation directly to web/docs directory
 
 # Project information
 PROJECT_NAME           = "Blahaj PI"
 PROJECT_BRIEF          = "Your friendly shark detective keeping social waters safe"
 PROJECT_NUMBER         = "1.0"
 
-# Output configuration
-# Set output directly to web/docs directory with no subdirectories
+# Output configuration - most important change is to output directly to web/docs
 OUTPUT_DIRECTORY       = web/docs
 HTML_OUTPUT            = .
-# Disable LaTeX output as we only need HTML
 GENERATE_LATEX         = NO
 
-# Input files configuration
-# Specify the locations of our source code
+# Input files
 INPUT                  = lib/include lib/src cli/include cli/src
-# Patterns of files to process
 FILE_PATTERNS          = *.cpp *.hpp *.h *.cc
-# Process subdirectories recursively
 RECURSIVE              = YES
-# Document all entities, even those with no documentation
 EXTRACT_ALL            = YES
-# Don't include private class members
 EXTRACT_PRIVATE        = NO
-# Include static members
 EXTRACT_STATIC         = YES
 
 # Display options
-# Show full path names for files
 FULL_PATH_NAMES        = YES
-# Include brief member descriptions
 BRIEF_MEMBER_DESC      = YES
-# Repeat brief descriptions in detailed section
 REPEAT_BRIEF           = YES
-# Don't generate detailed section for brief-only entities
 ALWAYS_DETAILED_SEC    = NO
-# Don't show inherited members inline
 INLINE_INHERITED_MEMB  = NO
 
 # Preprocessing options
-# Enable preprocessing for macros
 ENABLE_PREPROCESSING   = YES
-# Enable macro expansion
 MACRO_EXPANSION        = YES
-# Don't limit expansion to predefined macros
 EXPAND_ONLY_PREDEF     = NO
-# Search included files for documentation
 SEARCH_INCLUDES        = YES
 
+# Custom HTML header, footer, and stylesheet for the trans flag theme
+HTML_HEADER            = doxytheme/header.html
+HTML_FOOTER            = doxytheme/footer.html
+HTML_EXTRA_STYLESHEET  = doxytheme/custom.css
+
+# Files to copy to the output directory
+HTML_EXTRA_FILES       = 
+
 # Diagram options
-# Disable dot tool usage (if installed, enable for better diagrams)
 HAVE_DOT               = NO
-# Don't use UML notation in diagrams
 UML_LOOK               = NO
-# Generate class inheritance graphs
 CLASS_GRAPH            = YES
-# Generate collaboration diagrams
 COLLABORATION_GRAPH    = YES
 
 # Generated output styling
-# Generate a tree-view navigation panel
 GENERATE_TREEVIEW      = YES
-# Enable alphabetical index
 DISABLE_INDEX          = NO
-# Enable search functionality
 SEARCHENGINE           = YES
 
 # Set HTML theme colors (blue theme to match shark theme)
