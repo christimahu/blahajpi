@@ -51,7 +51,7 @@ def generate_docs(args):
         print(f"Error: Doxyfile not found at {doxyfile_path}")
         print("Please create a Doxyfile in the project root directory.")
         return 1
-        
+    
     print(f"Running Doxygen with configuration file: {doxyfile_path}")
     result = subprocess.run([doxygen_exe, str(doxyfile_path)], 
                            cwd=project_root,
@@ -70,17 +70,34 @@ def generate_docs(args):
         print("Doxygen warnings:")
         print(result.stderr)
     
+    # After Doxygen completes, copy all theme files to ensure they're in the right place
+    print("Copying theme files to documentation directory...")
+    
+    # Copy all files from doxytheme to web/docs
+    doxytheme_dir = project_root / "doxytheme"
+    if doxytheme_dir.exists():
+        for file in os.listdir(doxytheme_dir):
+            source_file = doxytheme_dir / file
+            if source_file.is_file():
+                dest_file = docs_dir / file
+                shutil.copy(source_file, dest_file)
+                print(f"Copied {file} to {dest_file}")
+    
+    # Copy media files
+    media_dir = project_root / "web" / "media"
+    if media_dir.exists():
+        for file in ["blahajpi.webp", "favicon.ico"]:
+            source_file = media_dir / file
+            if source_file.exists():
+                dest_file = docs_dir / file
+                shutil.copy(source_file, dest_file)
+                print(f"Copied {file} to {dest_file}")
+    
     # Verify documentation was generated
     index_path = docs_dir / "index.html"
     if not index_path.exists():
         print(f"Warning: Documentation index not found at {index_path}")
         print("Doxygen may have generated files in a different location.")
-        
-        # Try to find the index file
-        for path in docs_dir.glob("**/index.html"):
-            print(f"Found index at: {path}")
-            index_path = path
-            break
     else:
         print(f"Documentation generated successfully to {docs_dir}")
     

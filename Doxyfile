@@ -50,6 +50,14 @@ EXPAND_ONLY_PREDEF     = NO
 # Search included files for documentation
 SEARCH_INCLUDES        = YES
 
+# Custom HTML header, footer, and stylesheet for the trans flag theme
+HTML_HEADER            = doxytheme/doxytheme-header.html
+HTML_FOOTER            = doxytheme/doxytheme-footer.html
+HTML_EXTRA_STYLESHEET  = doxytheme/doxytheme-custom.css
+
+# Extra HTML files to copy
+HTML_EXTRA_FILES       = web/media/blahajpi.webp web/media/favicon.ico
+
 # Diagram options
 # Disable dot tool usage (if installed, enable for better diagrams)
 HAVE_DOT               = NO

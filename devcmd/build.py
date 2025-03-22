@@ -100,22 +100,36 @@ def generate_docs(project_root):
     docs_dir = project_root / "web" / "docs"
     os.makedirs(docs_dir, exist_ok=True)
     
-    # Copy Blahaj image to the documentation directory
-    # This ensures the image is available when docs are viewed
-    image_src = project_root / "web" / "media" / "blahajpi.webp"
-    image_dest = docs_dir / "blahajpi.webp"
-    if image_src.exists():
-        print(f"Copying logo image to docs directory: {image_dest}")
-        shutil.copy(image_src, image_dest)
-    else:
-        print(f"Warning: Logo image not found at {image_src}")
+    # First, copy the theme files directly to the output directory
+    doxytheme_dir = project_root / "doxytheme"
+    if doxytheme_dir.exists():
+        print(f"Copying Doxygen theme files from {doxytheme_dir} to {docs_dir}")
+        
+        # Copy CSS file with correct name
+        css_src = doxytheme_dir / "doxygen-custom.css"
+        css_dest = docs_dir / "doxygen-custom.css"
+        if css_src.exists():
+            shutil.copy(css_src, css_dest)
+            print(f"Copied custom CSS: {css_dest}")
+        else:
+            print(f"Warning: Custom CSS file not found at {css_src}")
     
-    # Copy favicon if it exists
-    favicon_src = project_root / "web" / "media" / "favicon.ico"
-    favicon_dest = docs_dir / "favicon.ico"
-    if favicon_src.exists():
-        print(f"Copying favicon to docs directory: {favicon_dest}")
-        shutil.copy(favicon_src, favicon_dest)
+    # Copy media files directly to docs directory
+    media_dir = project_root / "web" / "media"
+    if media_dir.exists():
+        # Copy logo
+        logo_src = media_dir / "blahajpi.webp"
+        logo_dest = docs_dir / "blahajpi.webp"
+        if logo_src.exists():
+            shutil.copy(logo_src, logo_dest)
+            print(f"Copied logo: {logo_dest}")
+        
+        # Copy favicon
+        favicon_src = media_dir / "favicon.ico"
+        favicon_dest = docs_dir / "favicon.ico"
+        if favicon_src.exists():
+            shutil.copy(favicon_src, favicon_dest)
+            print(f"Copied favicon: {favicon_dest}")
     
     # Run Doxygen to generate documentation
     print("Running Doxygen to generate documentation...")
