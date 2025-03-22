@@ -12,15 +12,12 @@ def generate_docs(args):
     """Generate project documentation"""
     project_root = find_project_root()
     
-    # Directories
-    docs_dir = project_root / "docs"
-    build_dir = project_root / "build"
+    # Define target directory directly
     web_docs_dir = project_root / "web" / "docs"
-    web_api_dir = web_docs_dir / "api"
     
-    # Create directories
-    web_docs_dir.mkdir(exist_ok=True, parents=True)
-    web_api_dir.mkdir(exist_ok=True, parents=True)
+    # Create the target directory
+    os.makedirs(web_docs_dir, exist_ok=True)
+    print(f"Created output directory: {web_docs_dir}")
     
     # Check if Doxygen is installed
     doxygen_exe = shutil.which("doxygen")
@@ -28,92 +25,113 @@ def generate_docs(args):
         print("Error: Doxygen not found. Please install Doxygen.")
         return 1
     
-    # Run Doxygen
-    doxygen_file = project_root / "Doxyfile"
-    if not doxygen_file.exists():
-        print("Creating a default Doxyfile...")
-        subprocess.run([doxygen_exe, "-g"], cwd=project_root)
-        
-        with open(doxygen_file, 'a') as f:
-            f.write("\n# Blahaj PI specific settings\n")
-            f.write("PROJECT_NAME = \"Blahaj PI\"\n")
-            f.write("PROJECT_BRIEF = \"Your friendly shark detective\"\n")
-            f.write("OUTPUT_DIRECTORY = docs/doxygen\n")
-            f.write("INPUT = lib/include lib/src cli/include cli/src\n")
-            f.write("RECURSIVE = YES\n")
-            f.write("EXTRACT_ALL = YES\n")
-            f.write("GENERATE_HTML = YES\n")
-            f.write("HTML_OUTPUT = html\n")
-            f.write("GENERATE_LATEX = NO\n")
+    # Get Doxygen version
+    try:
+        version_result = subprocess.run([doxygen_exe, "--version"], capture_output=True, text=True)
+        print(f"Doxygen version used: {version_result.stdout.strip()}")
+    except Exception as e:
+        print(f"Could not determine Doxygen version: {e}")
     
+    # Create a temporary Doxyfile directly using a string
+    temp_doxyfile = project_root / "temp_doxyfile"
+    with open(temp_doxyfile, 'w') as f:
+        f.write(f"""
+# Temporary Doxyfile for Blahaj PI
+PROJECT_NAME           = "Blahaj PI"
+PROJECT_BRIEF          = "Your friendly shark detective"
+OUTPUT_DIRECTORY       = {web_docs_dir}
+CREATE_SUBDIRS         = NO
+ALLOW_UNICODE_NAMES    = YES
+OUTPUT_LANGUAGE        = English
+BRIEF_MEMBER_DESC      = YES
+REPEAT_BRIEF           = YES
+INPUT                  = {project_root}/lib/include {project_root}/lib/src {project_root}/cli/include {project_root}/cli/src
+FILE_PATTERNS          = *.hpp *.cpp *.h *.c
+RECURSIVE              = YES
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+GENERATE_HTML          = YES
+HTML_OUTPUT            = .
+GENERATE_LATEX         = NO
+GENERATE_XML           = NO
+GENERATE_MAN           = NO
+GENERATE_RTF           = NO
+CASE_SENSE_NAMES       = NO
+VERBATIM_HEADERS       = YES
+""")
+    
+    print("Generated temporary Doxyfile for direct output")
+    
+    # Run Doxygen with the temporary config
     print("Generating API documentation with Doxygen...")
-    result = subprocess.run([doxygen_exe], cwd=project_root)
+    result = subprocess.run([doxygen_exe, str(temp_doxyfile)], cwd=project_root)
+    
+    # Remove the temporary Doxyfile
+    os.remove(temp_doxyfile)
+    print("Removed temporary Doxyfile")
+    
     if result.returncode != 0:
         print("Error: Doxygen failed")
         return 1
     
-    # Copy output to web directory
-    doxygen_output = project_root / "docs" / "doxygen" / "html"
-    if doxygen_output.exists():
-        # Use appropriate copy command based on platform
-        import platform
-        if platform.system() == "Windows":
-            copy_cmd = f'xcopy "{doxygen_output}" "{web_api_dir}" /E /I /Y'
-            os.system(copy_cmd)
-        else:
-            # For Unix-like systems
-            copy_cmd = ['cp', '-R', f"{doxygen_output}/.", f"{web_api_dir}"]
-            subprocess.run(copy_cmd)
-        
-        print(f"API documentation copied to {web_api_dir}")
+    print(f"Doxygen documentation generated to {web_docs_dir}")
     
     # Check for MkDocs installation
     mkdocs_exe = shutil.which("mkdocs")
     if mkdocs_exe:
         print("Generating documentation website with MkDocs...")
         
-        # Create basic docs if they don't exist
-        os.makedirs(project_root / "docs" / "user-guide", exist_ok=True)
-        os.makedirs(project_root / "docs" / "developer-guide", exist_ok=True)
+        # Create basic docs structure if needed
+        docs_dir = project_root / "docs"
+        os.makedirs(docs_dir, exist_ok=True)
+        os.makedirs(docs_dir / "user-guide", exist_ok=True)
+        os.makedirs(docs_dir / "developer-guide", exist_ok=True)
         
-        mkdocs_file = project_root / "docs" / "mkdocs.yml"
+        # Create basic index.md if it doesn't exist
+        index_file = docs_dir / "index.md"
+        if not index_file.exists():
+            with open(index_file, 'w') as f:
+                f.write("# Blahaj PI\n\n")
+                f.write("Your friendly shark detective keeping social waters safe.\n")
+        
+        # Create mkdocs.yml if it doesn't exist
+        mkdocs_file = docs_dir / "mkdocs.yml"
         if not mkdocs_file.exists():
-            print("Creating basic MkDocs configuration...")
             with open(mkdocs_file, 'w') as f:
                 f.write("site_name: Blahaj PI\n")
                 f.write("theme: readthedocs\n")
-                
-                # Create a minimal index if it doesn't exist
-                index_file = project_root / "docs" / "index.md"
-                if not index_file.exists():
-                    with open(index_file, 'w') as idx:
-                        idx.write("# Blahaj PI\n")
-                        idx.write("Your friendly shark detective keeping social waters safe.\n")
         
-        # Build MkDocs
-        subprocess.run([mkdocs_exe, "build", "-f", str(mkdocs_file), "-d", str(web_docs_dir)], 
-                      cwd=project_root, 
-                      capture_output=True)
+        # Build MkDocs directly to web/docs
+        try:
+            print(f"Building MkDocs to {web_docs_dir}...")
+            subprocess.run(
+                [mkdocs_exe, "build", "-f", str(mkdocs_file), "-d", str(web_docs_dir)], 
+                cwd=project_root,
+                check=True
+            )
+            print("MkDocs build completed successfully.")
+        except Exception as e:
+            print(f"Error building MkDocs: {e}")
+    else:
+        print("MkDocs not found. Only API documentation will be available.")
+        print("To install MkDocs, run: pip install mkdocs mkdocs-material")
     
-    print("\nDocumentation generated successfully!")
-    print(f"Documentation can be found at: {web_docs_dir}")
+    print("\nDocumentation generation completed.")
+    print(f"Documentation available at: {web_docs_dir}")
     
     # Open in browser if requested
     if args.open_docs:
         try:
             import webbrowser
             index_path = web_docs_dir / "index.html"
-            api_index_path = web_api_dir / "index.html"
             
-            # Try opening API docs first, then general docs
-            if api_index_path.exists():
-                webbrowser.open(f"file://{api_index_path}")
-                print("API documentation opened in your web browser.")
-            elif index_path.exists():
+            if index_path.exists():
                 webbrowser.open(f"file://{index_path}")
                 print("Documentation opened in your web browser.")
             else:
-                print(f"Documentation index not found")
+                print(f"Documentation index not found at {index_path}")
         except Exception as e:
             print(f"Error opening documentation in browser: {e}")
     

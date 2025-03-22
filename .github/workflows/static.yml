@@ -1,4 +1,4 @@
-# .github/workflows/gh-pages.yml
+# .github/workflows/static.yml
 name: Deploy Documentation and Website
 
 on:
@@ -35,19 +35,36 @@ jobs:
           sudo apt-get install -y doxygen graphviz
           pip install mkdocs mkdocs-material
       
+      - name: Create necessary directories
+        run: |
+          mkdir -p docs/doxygen/html
+          mkdir -p web/docs
+      
       - name: Generate API documentation
         run: |
-          doxygen Doxyfile || echo "Creating default Doxyfile" && doxygen -g && echo "PROJECT_NAME = \"Blahaj PI\"" >> Doxyfile && echo "INPUT = lib/include lib/src" >> Doxyfile && echo "RECURSIVE = YES" >> Doxyfile && doxygen
-          
-      - name: Prepare web docs directory
-        run: mkdir -p web/docs/api
+          # Check if Doxyfile exists, if not create it
+          if [ ! -f "Doxyfile" ]; then
+            echo "Creating default Doxyfile"
+            doxygen -g
+            echo "PROJECT_NAME = \"Blahaj PI\"" >> Doxyfile
+            echo "PROJECT_BRIEF = \"Your friendly shark detective keeping social waters safe\"" >> Doxyfile
+            echo "OUTPUT_DIRECTORY = docs/doxygen" >> Doxyfile
+            echo "INPUT = lib/include lib/src cli/include cli/src" >> Doxyfile
+            echo "RECURSIVE = YES" >> Doxyfile
+            echo "EXTRACT_ALL = YES" >> Doxyfile
+            echo "GENERATE_HTML = YES" >> Doxyfile
+            echo "HTML_OUTPUT = html" >> Doxyfile
+            echo "GENERATE_LATEX = NO" >> Doxyfile
+          fi
+          doxygen
           
       - name: Copy Doxygen output
         run: |
           if [ -d "docs/doxygen/html" ]; then
-            cp -r docs/doxygen/html/* web/docs/api/
+            cp -r docs/doxygen/html/* web/docs/
+            echo "Doxygen output copied to web/docs"
           else
-            echo "Warning: Doxygen output not found"
+            echo "Warning: Doxygen output not found at docs/doxygen/html"
           fi
           
       - name: Build MkDocs documentation
@@ -66,7 +83,7 @@ jobs:
             fi
           fi
           
-          # Build MkDocs
+          # Build MkDocs directly to web/docs (will override Doxygen content)
           mkdocs build -f docs/mkdocs.yml -d web/docs || echo "MkDocs build failed, continuing anyway"
       
       - name: Setup Pages

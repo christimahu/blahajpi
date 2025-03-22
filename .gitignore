@@ -65,6 +65,5 @@ models/
 results/
 
 # Generated documentation
-docs/doxygen/
 web/docs/
 
