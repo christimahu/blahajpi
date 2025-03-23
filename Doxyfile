@@ -56,6 +56,9 @@ HTML_FOOTER            = doxytheme/doxytheme-footer.html
 HTML_EXTRA_STYLESHEET  = doxytheme/doxygen-awesome.css \
                          doxytheme/doxytheme-custom.css
 
+# Force light mode and disable dark mode toggle
+HTML_COLORSTYLE        = LIGHT
+
 # Diagram options
 # Disable dot tool usage (if installed, enable for better diagrams)
 HAVE_DOT               = NO
@@ -74,7 +77,7 @@ DISABLE_INDEX          = NO
 # Enable search functionality
 SEARCHENGINE           = YES
 
-# Set HTML theme colors (matching doxygen-awesome recommendations)
-HTML_COLORSTYLE_HUE    = 209
+# Set HTML theme colors (matching trans flag colors)
+HTML_COLORSTYLE_HUE    = 210
 HTML_COLORSTYLE_SAT    = 255
 HTML_COLORSTYLE_GAMMA  = 113
