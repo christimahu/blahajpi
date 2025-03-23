@@ -1,15 +1,24 @@
-/* Trans flag color scheme */
+/* Trans flag theme for Doxygen Awesome */
 :root {
     --trans-blue: #55CDFC;
     --trans-pink: #F7A8B8;
     --trans-white: #FFFFFF;
-    --text-color: #333;
-    --link-color: #0056b3;
-    --header-color: #2a2a2a;
-    --code-bg: #f8f9fa;
+    
+    /* Override Doxygen Awesome variables for light mode */
+    --primary-color: var(--trans-blue);
+    --primary-dark-color: #3b9bc0;
+    --primary-light-color: #a8e1f8;
+    --accent-color: var(--trans-pink);
+    --accent-dark-color: #e27f92;
+    --accent-light-color: #fcd5dd;
+    
+    /* Make text black instead of gray */
+    --page-foreground-color: #000000;
+    --page-secondary-foreground-color: #222222;
+    --page-background-color: #ffffff;
 }
 
-/* Page background with trans flag */
+/* Trans flag background */
 body {
     background: linear-gradient(to right, 
         var(--trans-blue) 0%, 
@@ -23,153 +32,173 @@ body {
         var(--trans-blue) 85%, 
         var(--trans-blue) 100%
     );
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
 }
 
-/* Main content area */
-div.contents, #titlearea, div.header, .memtitle, .memdoc {
-    background-color: rgba(255, 255, 255, 0.9);
+/* Make all content containers semi-transparent */
+#top, .header, .contents, .memberdecls, .memproto, .memdoc, nav, #nav-tree, #nav-path,
+.directory, .memtitle, .memname, .memItemLeft, .memItemRight, .sm-dox {
+    background-color: rgba(255, 255, 255, 0.9) !important;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1rem;
+    margin-bottom: 5px;
 }
 
-/* Make content stand out from background */
-div#doc-content {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+/* Remove the black bars/lines in the background */
+.memtitle, .memSeparator, .memberdecls tr.heading, div.header, .header,
+#titlearea, div.title {
+    background-image: none !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-top: none !important;
+    border-bottom: 1px solid #dddddd !important;
+}
+
+/* Fix section headers */
+h1, h2, h3, h4, h5, h6, .title {
+    color: #000000 !important;
+    background: none !important;
+    border-bottom: 1px solid #dddddd !important;
+}
+
+/* Fix text color for all elements to be darker */
+.contents, .memproto, .memdoc, p, div, td, th, li {
+    color: #222222 !important;
+}
+
+/* Darken any specifically grey text */
+.mdescLeft, .mdescRight, .memItemLeft, .memItemRight,
+.params .paramname, .retval .paramname, .tparams .paramname, .exception .paramname,
+.memname, code, span, a.code, div.fragment * {
+    color: #222222 !important;
+}
+
+/* Make links the trans pink color */
+a, a:visited, a:hover, a:active, .contents a:visited, .el,
+.sm-dox a span.sub-arrow, .directory .levels, .navpath li.navelem a,
+.directory .arrow, #nav-path > ul > li.navelem a {
+    color: var(--trans-pink) !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Style active nav links */
+#main-nav ul.sm-dox > li > a.highlighted, #main-nav ul.sm-dox > li > a:hover {
+    background-color: var(--trans-pink) !important;
+    color: white !important;
+}
+
+/* Add padding around contents */
+div.contents {
     padding: 10px;
     margin: 10px;
 }
 
-/* Header styling */
-#titlearea {
-    border-bottom: 1px solid #ddd;
-    padding: 15px;
-}
-
-#projectlogo img {
-    max-height: 80px;
-    border-radius: 8px;
-}
-
-#projectname {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 2.5rem;
-    color: var(--header-color);
-}
-
-#projectbrief {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 1.2rem;
-    color: #555;
-}
-
-/* Navigation tabs styling */
-.tabs, .tabs2, .tabs3 {
-    background-image: none;
-    background-color: var(--trans-blue);
-    color: white;
-}
-
-.tablist li {
+/* Specifically target section headers with black backgrounds */
+.section, div.section, .title, .groupheader, .memtitle {
+    background: rgba(255, 255, 255, 0.9) !important;
     background-image: none !important;
+    color: #222222 !important;
 }
 
-.tablist a {
+/* Target all section headers and remove backgrounds */
+h2.groupheader, div.groupheader, .section, div.section, 
+div[class^="section"], div[class*=" section"],
+div[id^="section"], div[id*=" section"] {
+    background-color: rgba(255, 255, 255, 0.9) !important;
     background-image: none !important;
-    color: #333 !important;
+    border-bottom: 1px solid #ddd !important;
+    color: #222222 !important;
+}
+
+/* Target navigation elements */
+.directory, .directory tr.even, .directory tr.odd, 
+.navpath li, ul.tablist li, ul.tablist, ul.tablist li.current, 
+#navrow1, #navrow2, #navrow3, #navrow4, 
+#nav-tree-contents ul, #nav-tree-contents li, 
+.tablist a, .tablist a:hover, #MSearchSelectWindow,
+.navpath ul, .navpath li.footer, #nav-path ul {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    background-image: none !important;
+    color: #222222 !important;
+}
+
+/* Fix navigation text colors */
+#nav-tree .item, #nav-tree .label, span.label, 
+span.mlabel, span.item, li.item, div.item, 
+li a, div a, .item a, .icona, #nav-tree .item a {
+    color: #222222 !important;
+    background-color: transparent !important;
+}
+
+/* Target sidebar elements with dark backgrounds */
+[style*="background-color: black"],
+[style*="background-color:#000"],
+[style*="background-color: rgb(0, 0, 0)"],
+[style*="background-color:rgb(0,0,0)"],
+#side-nav, #nav-tree, .ui-resizable-border, 
+.ui-resizable-handle, #nav-tree-contents ul, 
+#nav-tree-contents li, #nav-tree .item, #nav-tree .label,
+span.arrow, #side-nav-tree, .side-nav-resizable,
+.ui-resizable-e, #slideout.slide-right {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    background-image: none !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #222222 !important;
+}
+
+/* Target specifically the "selected" style of the nav items */
+#nav-tree .selected, #nav-tree .selected a, 
+#nav-tree .selected .item, #nav-tree .selected .label,
+div.item.selected, span.item.selected, li.item.selected {
+    color: var(--trans-pink) !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
     text-shadow: none !important;
-    font-weight: bold;
 }
 
-.tablist a:hover {
-    background-color: var(--trans-pink) !important;
-    color: #fff !important;
+/* Fix any footer elements */
+.footer, .navpath, .navpath li, .footer *, #powerTip {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    background-image: none !important;
+    color: #222222 !important;
 }
 
-.tablist li.current a {
-    background-color: rgba(255, 255, 255, 0.8) !important;
-    color: var(--text-color) !important;
+/* Fix table rows */
+tr {
+    background: transparent !important;
 }
 
-/* Sidebar styling */
-#nav-tree {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
+/* Fix table borders */
+td, th {
+    border-color: #dddddd !important;
 }
 
-#nav-tree .selected {
-    background-image: none;
-    background-color: var(--trans-blue);
-    text-shadow: none;
-    color: white;
+/* Fix any code blocks */
+.fragment, pre.fragment, div.fragment {
+    background-color: #f8f9fa !important;
+    color: #222222 !important;
 }
 
-/* Footer styling */
-.footer {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
-    padding: 10px;
-    margin-top: 20px;
+/* Directly handle inline styles */
+[bgcolor="black"], [bgcolor="#000000"], [style*="background-color: black"],
+[style*="background-color:#000000"] {
+    background-color: rgba(255, 255, 255, 0.9) !important;
 }
 
-/* Search box styling */
-#MSearchBox {
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Force white background on any element with dark background */
+*, *:before, *:after {
+    background-color: inherit;
 }
 
-/* Links styling */
-a {
-    color: var(--link-color);
+[style*="background-color: rgb(52, 58, 64)"],
+[style*="background-color: #343a40"],
+[style*="background-color: black"],
+[style*="background-color: #000"],
+[style*="background: black"],
+[style*="background: #000"],
+.section[style*="background"],
+h2[style*="background"] {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    background-image: none !important;
+    background: rgba(255, 255, 255, 0.9) !important;
 }
-
-a:hover {
-    color: var(--trans-pink);
-    text-decoration: underline;
-}
-
-/* Introduction section */
-.intro-section {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 20px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.intro-section h1 {
-    color: var(--header-color);
-    font-family: 'Quicksand', sans-serif;
-    margin-top: 0;
-}
-
-.github-link {
-    display: inline-block;
-    background-color: #333;
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    margin-top: 15px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.github-link:hover {
-    background-color: #555;
-    color: white;
-}
-
-.github-icon {
-    margin-right: 5px;
-    vertical-align: middle;
-}
-
-/* Google Fonts integration for Quicksand font */
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');

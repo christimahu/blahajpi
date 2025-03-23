@@ -53,10 +53,8 @@ SEARCH_INCLUDES        = YES
 # Custom HTML header, footer, and stylesheet for the trans flag theme
 HTML_HEADER            = doxytheme/doxytheme-header.html
 HTML_FOOTER            = doxytheme/doxytheme-footer.html
-HTML_EXTRA_STYLESHEET  = doxytheme/doxytheme-custom.css
-
-# Extra HTML files to copy
-HTML_EXTRA_FILES       = web/media/blahajpi.webp web/media/favicon.ico
+HTML_EXTRA_STYLESHEET  = doxytheme/doxygen-awesome.css \
+                         doxytheme/doxytheme-custom.css
 
 # Diagram options
 # Disable dot tool usage (if installed, enable for better diagrams)
@@ -76,7 +74,7 @@ DISABLE_INDEX          = NO
 # Enable search functionality
 SEARCHENGINE           = YES
 
-# Set HTML theme colors (blue theme to match shark theme)
-HTML_COLORSTYLE_HUE    = 200
-HTML_COLORSTYLE_SAT    = 120
-HTML_COLORSTYLE_GAMMA  = 80
+# Set HTML theme colors (matching doxygen-awesome recommendations)
+HTML_COLORSTYLE_HUE    = 209
+HTML_COLORSTYLE_SAT    = 255
+HTML_COLORSTYLE_GAMMA  = 113
