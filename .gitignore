@@ -45,6 +45,30 @@ _deps/
 build/
 cmake-build-*/
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.egg
+*.egg-info/
+dist/
+build/
+.env
+.venv
+env/
+venv/
+pip-wheel-metadata/
+*.manifest
+*.spec
+.cache/
+.mypy_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
 # Common editor/IDE files
 .vscode/
 .idea/
@@ -65,6 +89,5 @@ models/
 results/
 
 # Generated documentation
-docs/doxygen/
 web/docs/
 

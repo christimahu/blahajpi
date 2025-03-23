@@ -76,7 +76,74 @@ def run_build(args):
     models_dir.mkdir(exist_ok=True)
     results_dir.mkdir(exist_ok=True)
     
+    # Generate documentation if needed
+    if not args.no_docs and os.path.exists(os.path.join(project_root, "Doxyfile")):
+        print("\nGenerating documentation...")
+        generate_docs(project_root)
+    
     return 0
+
+def generate_docs(project_root):
+    """
+    Generate documentation with Doxygen using custom theme
+    
+    Args:
+        project_root: Path to the project root directory
+    """
+    # Check if Doxygen is installed
+    doxygen_path = shutil.which("doxygen")
+    if not doxygen_path:
+        print("Warning: Doxygen not found, skipping documentation generation")
+        return
+    
+    # Ensure web/docs directory exists
+    docs_dir = project_root / "web" / "docs"
+    os.makedirs(docs_dir, exist_ok=True)
+    
+    # First, copy the theme files directly to the output directory
+    doxytheme_dir = project_root / "doxytheme"
+    if doxytheme_dir.exists():
+        print(f"Copying Doxygen theme files from {doxytheme_dir} to {docs_dir}")
+        
+        # Copy CSS file with correct name
+        css_src = doxytheme_dir / "doxygen-custom.css"
+        css_dest = docs_dir / "doxygen-custom.css"
+        if css_src.exists():
+            shutil.copy(css_src, css_dest)
+            print(f"Copied custom CSS: {css_dest}")
+        else:
+            print(f"Warning: Custom CSS file not found at {css_src}")
+    
+    # Copy media files directly to docs directory
+    media_dir = project_root / "web" / "media"
+    if media_dir.exists():
+        # Copy logo
+        logo_src = media_dir / "blahajpi.webp"
+        logo_dest = docs_dir / "blahajpi.webp"
+        if logo_src.exists():
+            shutil.copy(logo_src, logo_dest)
+            print(f"Copied logo: {logo_dest}")
+        
+        # Copy favicon
+        favicon_src = media_dir / "favicon.ico"
+        favicon_dest = docs_dir / "favicon.ico"
+        if favicon_src.exists():
+            shutil.copy(favicon_src, favicon_dest)
+            print(f"Copied favicon: {favicon_dest}")
+    
+    # Run Doxygen to generate documentation
+    print("Running Doxygen to generate documentation...")
+    result = subprocess.run([doxygen_path], cwd=project_root)
+    
+    if result.returncode != 0:
+        print("Warning: Doxygen returned non-zero exit code")
+    else:
+        print(f"Documentation generated successfully in {docs_dir}")
+        # Check if index.html was generated
+        if (docs_dir / "index.html").exists():
+            print("Main documentation page available at: web/docs/index.html")
+        else:
+            print("Warning: index.html not found in documentation directory")
 
 def clean_build(args):
     """Clean build and generated directories"""
@@ -93,6 +160,10 @@ def clean_build(args):
         project_root / "models",
         project_root / "results"
     ]
+    
+    # Clean documentation directory if needed
+    if hasattr(args, 'clean_docs') and args.clean_docs:
+        dirs_to_clean.append(project_root / "web" / "docs")
     
     # Clean build directories
     cleaned = False

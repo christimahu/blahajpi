@@ -75,7 +75,8 @@ def clean_directories(project_root):
     dirs_to_clean = [
         project_root / "build",
         project_root / "models",
-        project_root / "results"
+        project_root / "results",
+        project_root / "web" / "docs"
     ]
     
     cleaned = False
@@ -469,73 +470,6 @@ def run_tests(project_root, args):
         print("\nSome tests failed!")
         return False
 
-def generate_docs(project_root, open_browser=False):
-    """Generate project documentation"""
-    # Directories
-    docs_dir = project_root / "docs"
-    build_dir = project_root / "build"
-    web_docs_dir = project_root / "web" / "docs"
-    web_api_dir = web_docs_dir / "api"
-    
-    # Create directories
-    web_docs_dir.mkdir(exist_ok=True, parents=True)
-    web_api_dir.mkdir(exist_ok=True, parents=True)
-    
-    # Check if Doxygen is installed
-    try:
-        subprocess.run(["doxygen", "--version"], capture_output=True, check=True)
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        print("Error: Doxygen not found. Please install Doxygen.")
-        return False
-    
-    # Run Doxygen
-    doxygen_file = project_root / "Doxyfile"
-    if not doxygen_file.exists():
-        print("Creating a default Doxyfile...")
-        subprocess.run(["doxygen", "-g"], cwd=project_root)
-        
-        with open(doxygen_file, 'a') as f:
-            f.write("\n# Blahaj PI specific settings\n")
-            f.write("PROJECT_NAME = \"Blahaj PI\"\n")
-            f.write("PROJECT_BRIEF = \"Your friendly shark detective\"\n")
-            f.write("OUTPUT_DIRECTORY = docs/doxygen\n")
-            f.write("INPUT = lib/include lib/src cli/include cli/src\n")
-            f.write("RECURSIVE = YES\n")
-            f.write("EXTRACT_ALL = YES\n")
-            f.write("GENERATE_HTML = YES\n")
-            f.write("HTML_OUTPUT = html\n")
-            f.write("GENERATE_LATEX = NO\n")
-    
-    print("Generating API documentation with Doxygen...")
-    if subprocess.run(["doxygen"], cwd=project_root).returncode != 0:
-        print("Error: Doxygen failed")
-        return False
-    
-    # Copy output to web directory
-    doxygen_output = project_root / "docs" / "doxygen" / "html"
-    if doxygen_output.exists():
-        copy_cmd = f'xcopy "{doxygen_output}" "{web_api_dir}" /E /I /Y' if platform.system() == "Windows" else f'cp -R "{doxygen_output}/." "{web_api_dir}"'
-        os.system(copy_cmd)
-        print(f"API documentation copied to {web_api_dir}")
-    
-    print("\nDocumentation generated successfully!")
-    print(f"Documentation can be found at: {web_docs_dir}")
-    
-    # Open in browser if requested
-    if open_browser:
-        try:
-            import webbrowser
-            index_path = web_docs_dir / "index.html"
-            if index_path.exists():
-                webbrowser.open(f"file://{index_path}")
-                print("Documentation opened in your web browser.")
-            else:
-                print(f"Documentation index not found at {index_path}")
-        except Exception as e:
-            print(f"Error opening documentation in browser: {e}")
-    
-    return True
-
 def main():
     """Main function"""
     args = parse_args()
@@ -552,7 +486,8 @@ def main():
     
     # Handle documentation generation
     if args.docs:
-        if not generate_docs(project_root, args.open_docs):
+        docs_module = __import__("devcmd.docs", fromlist=["generate_docs"]).generate_docs
+        if not docs_module(args):
             return 1
     
     # Handle build request (or needed for other actions)

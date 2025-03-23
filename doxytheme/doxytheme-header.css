@@ -1,0 +1,259 @@
+/* Trans flag theme for Doxygen Awesome - Header & Navigation */
+
+/* Create a seamless header that spans the entire width */
+#top {
+    background-color: var(--header-bg) !important;
+    border-bottom: none !important;
+    margin-bottom: 0 !important; /* Remove bottom margin */
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Title area with logo, project name and description */
+#titlearea {
+    width: 100%;
+    padding: 15px 20px;
+    background: transparent !important;
+    border-bottom: none !important;
+    margin: 0;
+}
+
+#titlearea table {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-spacing: 0 !important;
+}
+
+#titlearea table tbody tr {
+    display: flex;
+    align-items: flex-start;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Fix the logo size */
+#projectlogo {
+    width: 150px !important;
+    padding-right: 20px !important;
+    vertical-align: top !important;
+}
+
+#projectlogo img {
+    max-width: 150px !important;
+    max-height: 150px !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+#projectalign {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Enhance the project name */
+#projectname {
+    font-size: 32px !important;
+    font-weight: bold !important;
+    color: #000000 !important;
+    text-shadow: none !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+}
+
+#projectbrief {
+    font-size: 18px !important;
+    color: #222222 !important;
+    text-shadow: none !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+}
+
+/* GitHub link */
+.github-link {
+    display: block;
+    font-size: 14px !important;
+    margin-top: 4px !important;
+}
+
+.github-link a {
+    color: var(--trans-pink) !important;
+    text-decoration: none !important;
+}
+
+.github-link a:hover {
+    text-decoration: underline !important;
+}
+
+.github-link a::before {
+    content: "\f09b"; /* GitHub icon */
+    font-family: FontAwesome;
+    margin-right: 4px;
+}
+
+/* Additional styling for project title links */
+#projectname a {
+    color: #000000 !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+#projectname a:hover {
+    color: var(--trans-pink) !important;
+    text-decoration: none;
+}
+
+/* Ensure main-nav connects directly to the header with no gap */
+#main-nav {
+    background-color: var(--trans-blue) !important;
+    padding: 0 !important;
+    margin: 0 !important; /* Remove all margins */
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Navigation bar should span full width */
+.sm-dox {
+    background: transparent !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 20px !important;
+    border-radius: 0 !important;
+}
+
+/* Dropdown menu needs white background */
+.sm-dox ul {
+    background-color: white !important;
+    border: 1px solid var(--separator-color) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    padding: 5px !important;
+}
+
+/* Dropdown menu items */
+.sm-dox ul a {
+    color: #222222 !important;
+    background-color: white !important;
+    border-radius: 0 !important; /* Remove rounded corners */
+    padding: 6px 12px !important;
+}
+
+/* Dropdown menu items on hover */
+.sm-dox ul a:hover, 
+.sm-dox ul a:focus, 
+.sm-dox ul a:active {
+    background-color: var(--trans-pink) !important;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 0 !important; /* Remove rounded corners */
+}
+
+/* Top-level menu items */
+.sm-dox > li > a {
+    color: white !important;
+    background: transparent !important;
+    border-radius: 0 !important; /* Remove rounded corners */
+    font-weight: 500 !important;
+}
+
+.sm-dox > li > a:hover,
+.sm-dox > li > a:active,
+.sm-dox > li > a:focus,
+.sm-dox > li > a.highlighted {
+    background-color: var(--trans-pink) !important;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 0 !important; /* Remove rounded corners */
+}
+
+/* Make sure tab rows don't stretch across the screen */
+.tabs, .tabs2, .tabs3 {
+    background: var(--trans-blue) !important;
+    border-bottom: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.tablist {
+    background: transparent !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 20px !important;
+    border-radius: 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Fix tab items to match navbar style */
+.tablist li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.tablist li a {
+    color: white !important;
+    border-radius: 0 !important;
+}
+
+.tablist li.current a {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 0 !important;
+}
+
+.tablist li a:hover {
+    background-color: var(--trans-pink) !important;
+    color: white !important;
+    border-radius: 0 !important;
+}
+
+/* Make search area look better and position in the header */
+#MSearchBox {
+    background-color: white !important;
+    border: 1px solid var(--separator-color) !important;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Adjust positioning for search box when in top navigation */
+#main-nav + #MSearchBox {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    margin: 10px 20px;
+}
+
+/* Search results dropdown needs solid background */
+#MSearchSelectWindow {
+    background-color: white !important;
+    border: 1px solid var(--separator-color) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.SelectItem {
+    background-color: white !important;
+}
+
+.SelectItem:hover {
+    background-color: var(--trans-pink) !important;
+    color: white !important;
+}
+
+/* Ensure no gaps in navigation hierarchy */
+.navpath {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Make sure there are no margins/padding in the tabs area */
+.tabs, .tabs2, .tabs3 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
