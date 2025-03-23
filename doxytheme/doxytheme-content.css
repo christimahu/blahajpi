@@ -1,0 +1,165 @@
+/* Trans flag theme for Doxygen Awesome - Content */
+
+/* Make all content containers have rounded semi-transparent backgrounds */
+.contents, .memberdecls, .memproto, .memdoc, #nav-tree,
+.directory, .memtitle, .memname, .memItemLeft, .memItemRight {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Make the mainpage content container have proper margins */
+.contents {
+    padding: 1rem;
+    margin: 1rem auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Fix section headers */
+h1, h2, h3, h4, h5, h6, .title {
+    color: #000000 !important;
+    background: none !important;
+    border-bottom: 1px solid rgba(221, 221, 221, 0.7) !important;
+}
+
+/* Fix headers that had white bars */
+div.header {
+    background: transparent !important;
+    border-bottom: none !important;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Group header styles to avoid white lines */
+h2.groupheader {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(221, 221, 221, 0.7) !important;
+    box-shadow: none !important;
+    padding: 0.5rem 0;
+    margin: 1rem 0;
+}
+
+/* Fix text color for all elements to be darker */
+.contents, .memproto, .memdoc, p, div, td, th, li {
+    color: #222222 !important;
+}
+
+/* Darken any specifically grey text */
+.mdescLeft, .mdescRight, .memItemLeft, .memItemRight,
+.params .paramname, .retval .paramname, .tparams .paramname, .exception .paramname,
+.memname, code, span, a.code, div.fragment .line, div.fragment .line a, div.fragment .line span {
+    color: #222222 !important;
+}
+
+/* Make links the trans pink color */
+a, a:visited, a:hover, a:active, .contents a:visited, .el,
+.sm-dox a span.sub-arrow, .directory .levels, .navpath li.navelem a,
+.directory .arrow, #nav-path > ul > li.navelem a {
+    color: var(--trans-pink) !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Fix code and fragment backgrounds */
+code, div.fragment, pre.fragment {
+    background-color: rgba(248, 249, 250, 0.95) !important;
+    color: #222222 !important;
+    border: 1px solid #dedede !important;
+}
+
+/* Fragment colors - force light theme colors */
+div.fragment, pre.fragment {
+    background-color: rgba(248, 249, 250, 0.95) !important;
+    color: #222222 !important;
+}
+
+/* Increase title size on the documentation pages */
+div.header .title {
+    font-size: 28px !important;
+    font-weight: bold !important;
+}
+
+/* Remove the full-width headers and make them contained */
+.header .title, .header .summary {
+    max-width: 1200px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 8px;
+    padding: 1rem !important;
+}
+
+/* Prevent horizontal lines from extending across the page */
+hr, .memSeparator {
+    max-width: 1200px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    background-color: rgba(221, 221, 221, 0.7) !important;
+    box-shadow: none !important;
+}
+
+/* Target navigation elements */
+.directory, .directory tr.even, .directory tr.odd, 
+.navpath li, ul.tablist li, ul.tablist, ul.tablist li.current, 
+#navrow1, #navrow2, #navrow3, #navrow4, 
+#nav-tree-contents ul, #nav-tree-contents li, 
+.tablist a, .tablist a:hover, #MSearchSelectWindow,
+.navpath ul, .navpath li.footer {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    background-image: none !important;
+    color: #222222 !important;
+}
+
+/* Navigation path should be contained */
+#nav-path {
+    background: transparent !important;
+}
+
+#nav-path ul {
+    background: rgba(255, 255, 255, 0.8) !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: 8px;
+    margin: 1rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Fix any footer elements */
+.footer, .navpath, .footer * {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: #222222 !important;
+}
+
+/* Fix table rows */
+tr {
+    background: transparent !important;
+}
+
+/* Fix table borders */
+td, th {
+    border-color: rgba(221, 221, 221, 0.7) !important;
+}
+
+/* Override anything with black background */
+[style*="background-color: black"],
+[style*="background-color:#000"],
+[style*="background-color: rgb(0, 0, 0)"],
+[style*="background-color:rgb(0,0,0)"],
+[style*="background-color: rgb(52, 58, 64)"],
+[style*="background-color: #343a40"],
+[style*="background: black"],
+[style*="background: #000"] {
+    background-color: transparent !important;
+    background-image: none !important;
+    background: transparent !important;
+    color: #222222 !important;
+}

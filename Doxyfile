@@ -54,7 +54,10 @@ SEARCH_INCLUDES        = YES
 HTML_HEADER            = doxytheme/doxytheme-header.html
 HTML_FOOTER            = doxytheme/doxytheme-footer.html
 HTML_EXTRA_STYLESHEET  = doxytheme/doxygen-awesome.css \
-                         doxytheme/doxytheme-custom.css
+                         doxytheme/doxytheme-main.css \
+                         doxytheme/doxytheme-header.css \
+                         doxytheme/doxytheme-content.css \
+                         doxytheme/doxytheme-sidebar.css
 
 # Force light mode and disable dark mode toggle
 HTML_COLORSTYLE        = LIGHT

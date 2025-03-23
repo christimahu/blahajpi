@@ -1,0 +1,100 @@
+/* Trans flag theme for Doxygen Awesome - Main Settings */
+:root {
+    /* Main colors */
+    --trans-blue: #55CDFC;
+    --trans-pink: #F7A8B8;
+    --trans-white: #FFFFFF;
+    --header-bg: rgba(255, 255, 255, 0.9);
+    
+    /* Theme colors */
+    --primary-color: var(--trans-blue);
+    --primary-dark-color: #3b9bc0;
+    --primary-light-color: #a8e1f8;
+    --accent-color: var(--trans-pink);
+    --accent-dark-color: #e27f92;
+    --accent-light-color: #fcd5dd;
+    
+    /* Text colors */
+    --page-foreground-color: #000000 !important;
+    --page-secondary-foreground-color: #222222 !important;
+    --page-background-color: transparent !important;
+    
+    /* Elements */
+    --separator-color: #dedede !important;
+    --side-nav-background: rgba(255, 255, 255, 0.8) !important;
+    --code-background: #f5f5f5 !important;
+    --tablehead-background: #f1f1f1 !important;
+    
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --font-size-base: 15px;
+    --font-size-large: 18px;
+    --font-size-small: 13px;
+    
+    /* Completely remove dark theme */
+    color-scheme: light !important;
+}
+
+/* Force light mode for all elements */
+html, html.dark-mode, html:not(.light-mode) {
+    color-scheme: light !important;
+}
+
+/* Prevent media queries from enabling dark mode */
+@media (prefers-color-scheme: dark) {
+    html:not(.light-mode) {
+        color-scheme: light !important;
+        
+        --primary-color: var(--trans-blue) !important;
+        --primary-dark-color: #3b9bc0 !important;
+        --primary-light-color: #a8e1f8 !important;
+        
+        --page-background-color: transparent !important;
+        --page-foreground-color: #000000 !important;
+        --page-secondary-foreground-color: #222222 !important;
+        --separator-color: #dedede !important;
+        --side-nav-background: rgba(255, 255, 255, 0.8) !important;
+        
+        --code-background: #f5f5f5 !important;
+        --tablehead-background: #f1f1f1 !important;
+    }
+}
+
+/* Trans flag background */
+body {
+    background: linear-gradient(to right, 
+        var(--trans-blue) 0%, 
+        var(--trans-blue) 15%, 
+        var(--trans-pink) 15%, 
+        var(--trans-pink) 30%, 
+        var(--trans-white) 30%, 
+        var(--trans-white) 70%, 
+        var(--trans-pink) 70%, 
+        var(--trans-pink) 85%, 
+        var(--trans-blue) 85%, 
+        var(--trans-blue) 100%
+    );
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family);
+}
+
+/* Force images not to be inverted */
+img, svg {
+    filter: none !important;
+}
+
+div.contents div.dyncontent img,
+div.contents center img,
+div.contents table img,
+div.contents div.dyncontent iframe,
+div.contents center iframe,
+div.contents table iframe,
+div.contents .dotgraph iframe {
+    filter: none !important;
+}
+
+/* Ensure Doxygen Awesome dark mode toggle is either hidden or forced to light */
+doxygen-awesome-dark-mode-toggle {
+    display: none !important;
+}

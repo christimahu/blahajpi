@@ -78,7 +78,7 @@ def generate_docs(args):
     if doxytheme_dir.exists():
         for file in os.listdir(doxytheme_dir):
             source_file = doxytheme_dir / file
-            if source_file.is_file():
+            if source_file.is_file() and file.endswith(('.css', '.html', '.js')):
                 dest_file = docs_dir / file
                 shutil.copy(source_file, dest_file)
                 print(f"Copied {file} to {dest_file}")

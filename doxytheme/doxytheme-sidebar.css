@@ -1,0 +1,43 @@
+/* Trans flag theme for Doxygen Awesome - Sidebar & Tree View */
+
+/* Target sidebar elements */
+#side-nav, #nav-tree, .ui-resizable-border, 
+.ui-resizable-handle, #nav-tree-contents ul, 
+#nav-tree-contents li, #nav-tree .item, #nav-tree .label,
+span.arrow, #side-nav-tree, .side-nav-resizable,
+.ui-resizable-e {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    background-image: none !important;
+    color: #222222 !important;
+}
+
+/* Fix navigation text colors */
+#nav-tree .item, #nav-tree .label, span.label, 
+span.mlabel, span.item, li.item, div.item, 
+li a, div a, .item a, .icona, #nav-tree .item a {
+    color: #222222 !important;
+    background-color: transparent !important;
+}
+
+/* Target specifically the "selected" style of the nav items */
+#nav-tree .selected, #nav-tree .selected a, 
+#nav-tree .selected .item, #nav-tree .selected .label,
+div.item.selected, span.item.selected, li.item.selected {
+    color: var(--trans-pink) !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: none !important;
+}
+
+/* Override scrollbar colors to ensure visibility */
+#nav-tree::-webkit-scrollbar-thumb,
+div.fragment::-webkit-scrollbar-thumb,
+pre.fragment::-webkit-scrollbar-thumb,
+div.memproto::-webkit-scrollbar-thumb,
+.contents center::-webkit-scrollbar-thumb,
+.contents .center::-webkit-scrollbar-thumb,
+.contents table::-webkit-scrollbar-thumb,
+div.contents .toc::-webkit-scrollbar-thumb,
+.contents .dotgraph::-webkit-scrollbar-thumb,
+.contents .tabs-overview-container::-webkit-scrollbar-thumb {
+    background-color: var(--trans-pink) !important;
+}

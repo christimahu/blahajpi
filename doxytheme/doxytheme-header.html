@@ -16,8 +16,12 @@ $search
 $mathjax
 <link href="$relpath^$stylesheet" rel="stylesheet" type="text/css" />
 <link href="$relpath^doxygen-awesome.css" rel="stylesheet" type="text/css" />
-<link href="$relpath^doxytheme-custom.css" rel="stylesheet" type="text/css" />
+<link href="$relpath^doxytheme-main.css" rel="stylesheet" type="text/css" />
+<link href="$relpath^doxytheme-header.css" rel="stylesheet" type="text/css" />
+<link href="$relpath^doxytheme-content.css" rel="stylesheet" type="text/css" />
+<link href="$relpath^doxytheme-sidebar.css" rel="stylesheet" type="text/css" />
 <link rel="icon" href="$relpath^favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script type="text/javascript">
   // Force light mode
   document.documentElement.classList.add('light-mode');
@@ -31,12 +35,16 @@ $mathjax
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo">
+   <img alt="Logo" src="$relpath^../../media/blahajpi.webp"/>
+  </td>
   <td id="projectalign">
    <div id="projectname">
-    <a href="https://blahajpi.com" style="color: #F7A8B8; text-decoration: none;">$projectname</a>
+    <a href="https://blahajpi.com">$projectname</a>
    <!--BEGIN PROJECT_NUMBER-->&#160;<span id="projectnumber">$projectnumber</span><!--END PROJECT_NUMBER-->
    </div>
    <div id="projectbrief">$projectbrief</div>
+   <div class="github-link"><a href="https://github.com/christimahu/blahajpi" target="_blank">View the source on GitHub</a></div>
   </td>
  </tr>
  </tbody>
