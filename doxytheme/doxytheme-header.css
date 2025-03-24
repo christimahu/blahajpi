@@ -81,6 +81,7 @@
 .github-link a {
     color: var(--trans-pink) !important;
     text-decoration: none !important;
+    font-size: 1.4em;
 }
 
 .github-link a:hover {

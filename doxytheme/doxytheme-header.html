@@ -20,8 +20,10 @@ $mathjax
 <link href="$relpath^doxytheme-header.css" rel="stylesheet" type="text/css" />
 <link href="$relpath^doxytheme-content.css" rel="stylesheet" type="text/css" />
 <link href="$relpath^doxytheme-sidebar.css" rel="stylesheet" type="text/css" />
+<link href="$relpath^doxytheme-mobile.css" rel="stylesheet" type="text/css" />
 <link rel="icon" href="$relpath^favicon.ico" type="image/x-icon" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="$relpath^doxytheme-main.js"></script>
 <script type="text/javascript">
   // Force light mode
   document.documentElement.classList.add('light-mode');
@@ -49,5 +51,25 @@ $mathjax
  </tr>
  </tbody>
 </table>
+</div>
+
+<!-- Mobile message - hidden by default -->
+<div id="mobile-message" class="hidden">
+  <div class="mobile-content">
+    <img src="$relpath^../../media/blahajpi.webp" alt="Blahaj PI Logo" class="mobile-logo">
+    <h1 class="mobile-title">Blahaj PI Documentation</h1>
+    <p class="mobile-text">Sorry, the docs are not optimized for mobile :(</p>
+    <div class="mobile-buttons">
+      <a href="https://github.com/christimahu/blahajpi" class="mobile-button github-button">
+        <i class="fa fa-github"></i> View Source on GitHub
+      </a>
+      <a href="/" class="mobile-button home-button">
+        <i class="fa fa-home"></i> Return to Home
+      </a>
+      <a href="javascript:void(0)" id="continue-anyway" class="mobile-button desktop-button">
+        <i class="fa fa-desktop"></i> Continue to Desktop View
+      </a>
+    </div>
+  </div>
 </div>
 </div>

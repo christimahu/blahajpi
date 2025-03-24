@@ -60,7 +60,7 @@ HTML_EXTRA_STYLESHEET  = doxytheme/doxygen-awesome.css \
                          doxytheme/doxytheme-sidebar.css \
                          doxytheme/doxytheme-mobile.css
 
-# Extra JavaScript files for additional functionality
+# Extra JavaScript files
 HTML_EXTRA_FILES       = doxytheme/doxytheme-main.js
 
 # Force light mode and disable dark mode toggle
