@@ -1,0 +1,157 @@
+/**
+ * Mobile styles for Blahaj PI documentation
+ */
+
+/* Common utility class */
+.hidden {
+  display: none !important;
+}
+
+/* Mobile message overlay */
+#mobile-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, 
+    #55CDFC 0%, 
+    #55CDFC 15%, 
+    #F7A8B8 15%, 
+    #F7A8B8 30%, 
+    #FFFFFF 30%, 
+    #FFFFFF 70%, 
+    #F7A8B8 70%, 
+    #F7A8B8 85%, 
+    #55CDFC 85%, 
+    #55CDFC 100%
+  );
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.mobile-content {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  max-width: 90%;
+  width: 100%;
+}
+
+.mobile-logo {
+  width: 150px;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.mobile-title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+  font-weight: bold;
+}
+
+.mobile-text {
+  margin-bottom: 1.5rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.mobile-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.mobile-button {
+  display: block;
+  padding: 0.9rem 1rem;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  text-align: center;
+  transition: all 0.3s ease;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-button:active {
+  transform: scale(0.95);
+}
+
+.github-button {
+  background: linear-gradient(to right, #F7A8B8, #55CDFC);
+}
+
+.home-button {
+  background: linear-gradient(to right, #55CDFC, #F7A8B8);
+}
+
+.desktop-button {
+  background: rgba(0, 0, 0, 0.05);
+  color: #555;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Hide all navigation and search elements on mobile */
+@media (max-width: 768px) {
+  /* Specific targets for the hamburger menu */
+  #MSearchBox, 
+  #MSearchField,
+  #MSearchSelect,
+  .left #MSearchSelect,
+  #FSearchBox,
+  .SRPage,
+  #searchli,
+  .tabs, 
+  .tabs2, 
+  .tabs3,
+  #nav-tree,
+  #nav-sync,
+  .ui-resizable-handle,
+  .navpath,
+  #nav-path,
+  .sm-dox,
+  #main-menu,
+  #main-nav,
+  .mobile-nav,
+  #doxygen-awesome-darkmode-toggle,
+  a.hamburger-menu,
+  .hamburger-menu,
+  #elf_l,
+  button[type="button"],
+  .menu-trigger,
+  .navigation-controls,
+  .mobile-navigation,
+  #menu-icon {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  
+  /* Try to target any SVG icons that might be the hamburger */
+  svg[viewBox="0 0 30 30"],
+  svg[width="30"],
+  svg[height="30"] {
+    display: none !important;
+  }
+  
+  /* Force hide all menu items */
+  .menu-item,
+  .menu-toggle,
+  .dropdown-menu,
+  .menu-button {
+    display: none !important;
+  }
+}
+
+/* Add !important to all properties to ensure they take precedence */

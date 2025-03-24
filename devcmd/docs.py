@@ -86,12 +86,19 @@ def generate_docs(args):
     # Copy media files
     media_dir = project_root / "web" / "media"
     if media_dir.exists():
-        for file in ["blahajpi.webp", "favicon.ico"]:
-            source_file = media_dir / file
-            if source_file.exists():
-                dest_file = docs_dir / file
-                shutil.copy(source_file, dest_file)
-                print(f"Copied {file} to {dest_file}")
+        # Copy logo
+        logo_file = media_dir / "blahajpi.webp"
+        if logo_file.exists():
+            logo_dest = docs_dir / "blahajpi.webp"
+            shutil.copy(logo_file, logo_dest)
+            print(f"Copied blahajpi.webp to {logo_dest}")
+    
+    # Copy favicon (in web directory, not media)
+    favicon_file = project_root / "web" / "favicon.ico"
+    if favicon_file.exists():
+        favicon_dest = docs_dir / "favicon.ico"
+        shutil.copy(favicon_file, favicon_dest)
+        print(f"Copied favicon.ico to {favicon_dest}")
     
     # Verify documentation was generated
     index_path = docs_dir / "index.html"
